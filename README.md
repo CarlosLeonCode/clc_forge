@@ -1,4 +1,4 @@
-# 🔨 CLC Forge (`clc-forge`) v1.1.0
+# 🔨 CLC Forge (`clc-forge`) v1.2.0
 
 [![npm version](https://img.shields.io/npm/v/clc-forge.svg)](https://www.npmjs.com/package/clc-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,19 +9,20 @@
 
 ---
 
-## 🌐 Universal Polyglot & Multi-Stack Adapters
+## 🌐 Dedicated Polyglot & Framework Adapters (v1.2.0)
 
-`clc-forge` is 100% framework and language agnostic. It features an automated **Polyglot Stack Adapter Engine** that detects repository signatures and provisions tailored safeguards:
+`clc-forge` is 100% framework and language agnostic. It features dedicated **Polyglot Stack Adapters** for Next.js, FastAPI, Django, Astro, Rails, Go, Rust, and Laravel:
 
-| Ecosystem | Auto-Detected Signatures | Test Runner | Provisioned Safeguards & Linters |
+| Ecosystem Adapter | Auto-Detected Signatures | Test Runner | Dedicated Safeguards & Linters |
 |---|---|---|---|
+| ⚛️ **Next.js (App Router)** | `package.json` (`next`) | `Vitest` / `Jest` | 10 Frontend Safeguards (UI Reuse, Semantic Tokens, Server Components, Zod Contracts, Next/Image, A11y, Storybook). |
+| ⚡ **FastAPI Framework** | `pyproject.toml`, `requirements.txt` (`fastapi`) | `Pytest` | Pydantic V2 Schemas, Alembic Migration Idempotency, Clean Architecture AST, Scope Guard, Pytest TDD. |
+| 🎸 **Django Framework** | `manage.py`, `requirements.txt` (`django`) | `pytest-django` | Django ORM Migration Idempotency, Ruff AST Linter, pytest-django TDD, Scope Guard. |
+| 🚀 **Astro Framework** | `astro.config.mjs` | `Vitest` / `Playwright` | Astro Component Reuse, Tailwind v4 Tokens, A11y & ARIA, Content Collection Schema Guard. |
 | 💎 **Ruby on Rails** | `Gemfile`, `config/routes.rb` | `RSpec` / `Minitest` | RuboCop AST Linter, Brakeman Security, Rails Migration Idempotency, RSpec TDD. |
-| 🚀 **Astro** | `astro.config.mjs`, `astro` | `Vitest` / `Playwright` | Astro Component Reuse, Tailwind v4 Tokens, A11y & ARIA, Vitest TDD. |
 | 🐹 **Go (Golang)** | `go.mod` | `go test` | `golangci-lint` AST Linter, Go Clean Architecture (Domain/UseCase), `go test` TDD. |
 | 🦀 **Rust Engine** | `Cargo.toml` | `cargo test` | `cargo clippy` AST Linter, `cargo audit` Security, `cargo test` TDD. |
 | 🐘 **PHP (Laravel)** | `composer.json`, `artisan` | `Pest` / `PHPUnit` | PHPStan AST Linter, Laravel Migration Idempotency, Pest/PHPUnit TDD. |
-| ⚛️ **Next.js / React** | `package.json` (`next`) | `Vitest` | UI Reuse, Semantic Tokens, Server Components, Zod Contracts, A11y, Next/Image. |
-| 🐍 **FastAPI / Python** | `pyproject.toml`, `requirements.txt` | `Pytest` | AST Clean Architecture, Alembic Migration Idempotency, Scope Guard, Pytest TDD. |
 
 ---
 
@@ -42,7 +43,7 @@ AI coding agents (such as Claude Code, Cursor, Antigravity, and Gemini CLI) gene
 ## ⚡ Quick Start & Usage
 
 ### 1. Initialize or Provision CLC Forge in Any Repository
-Navigate to any repository (Rails, Astro, Go, Rust, Next.js, FastAPI, Laravel) and execute:
+Navigate to any repository (Next.js, FastAPI, Django, Astro, Rails, Go, Rust, Laravel) and execute:
 
 ```bash
 npx clc-forge
