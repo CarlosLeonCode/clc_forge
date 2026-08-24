@@ -1,6 +1,6 @@
 {
   "name": "clc-forge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLC Forge — The AI Agent Governance & Quality Engineering Engine by Carlos Leon Code.",
   "main": "./bin/cli.js",
   "bin": {
