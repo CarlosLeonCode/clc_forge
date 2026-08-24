@@ -1,33 +1,58 @@
 /**
- * CLC Harness — Auto-Discovery Engine
- * Inspects package.json, pyproject.toml, requirements.txt, alembic.ini, .husky, etc.
- * to automatically determine Frontend vs Backend, Next.js, FastAPI, Tailwind v4, Vitest, Pytest, etc.
+ * CLC Forge — Universal Auto-Discovery Engine
+ * Inspects repository signatures to auto-match the right polyglot Stack Adapter
+ * (Ruby on Rails, Astro, Go, Rust, Laravel, Next.js, FastAPI).
  */
 
 const fs = require('fs');
 const path = require('path');
 
+const RailsAdapter = require('./adapters/rails');
+const AstroAdapter = require('./adapters/astro');
+const GoAdapter = require('./adapters/go');
+const RustAdapter = require('./adapters/rust');
+const LaravelAdapter = require('./adapters/laravel');
+
+const adapters = [
+  new RailsAdapter(),
+  new AstroAdapter(),
+  new GoAdapter(),
+  new RustAdapter(),
+  new LaravelAdapter()
+];
+
 function autoDetectStack(targetDir) {
+  // 1. Check registered polyglot adapters first
+  for (const adapter of adapters) {
+    if (adapter.detect(targetDir)) {
+      return {
+        projectType: adapter.projectType,
+        framework: adapter.name,
+        styling: adapter.projectType === 'frontend' ? 'Tailwind CSS v4' : 'N/A',
+        uiLibrary: adapter.projectType === 'frontend' ? 'Component Primitives' : 'N/A',
+        testRunner: adapter.testRunner,
+        gitHooks: fs.existsSync(path.join(targetDir, '.husky')) ? 'husky' : 'githooks',
+        orm: 'Framework Native',
+        adapter
+      };
+    }
+  }
+
+  // 2. Default JavaScript/TypeScript & Python detection
   const config = {
     projectType: 'unknown',
     framework: 'unknown',
     styling: 'none',
     uiLibrary: 'none',
     testRunner: 'unknown',
-    gitHooks: 'native',
-    orm: 'none'
+    gitHooks: fs.existsSync(path.join(targetDir, '.husky')) ? 'husky' : 'githooks',
+    orm: 'none',
+    adapter: null
   };
 
   const hasPkgJson = fs.existsSync(path.join(targetDir, 'package.json'));
   const hasPyproject = fs.existsSync(path.join(targetDir, 'pyproject.toml'));
   const hasRequirements = fs.existsSync(path.join(targetDir, 'requirements.txt'));
-  const hasHusky = fs.existsSync(path.join(targetDir, '.husky'));
-
-  if (hasHusky) {
-    config.gitHooks = 'husky';
-  } else {
-    config.gitHooks = 'githooks';
-  }
 
   if (hasPkgJson) {
     try {

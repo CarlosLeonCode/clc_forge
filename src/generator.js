@@ -1,7 +1,6 @@
 /**
- * CLC Forge — Provisioning Engine
- * Copies tools, sets permissions, provisions git hooks, creates docs/ & sdds/,
- * and writes the project AGENTS.md document for CLC Forge.
+ * CLC Forge — Universal Provisioning Engine
+ * Provisions polyglot stack adapters (Rails, Astro, Go, Rust, Laravel) or fallback tools.
  */
 
 const fs = require('fs');
@@ -9,6 +8,11 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 function generateHarness(targetDir, config) {
+  if (config.adapter) {
+    config.adapter.provision(targetDir, config);
+    return;
+  }
+
   const isFront = config.projectType === 'frontend';
 
   // 1. Create docs/ and sdds/ directories
@@ -28,7 +32,7 @@ function generateHarness(targetDir, config) {
   fs.writeFileSync(path.join(targetDir, 'sdds', '.gitkeep'), '', 'utf-8');
 
   // 3. Generate AGENTS.md
-  const agentsContent = `# 🔨 CLC Forge ${isFront ? 'Frontend' : 'Backend'} — AGENTS
+  const agentsContent = `# 🔨 CLC Forge ${config.framework} (${config.projectType.toUpperCase()}) — AGENTS
 
 This document is the **authoritative law** for AI agents working in this repository.
 Forged by **CLC Forge: The AI Agent Governance Engine**.
@@ -36,7 +40,7 @@ Forged by **CLC Forge: The AI Agent Governance Engine**.
 ## 1. The Loop (Every Task)
 1. **Research** — Inspect codebase / docs before writing code.
 2. **Plan** — Write an SDD under \`sdds/{change-name}/\`. SDDs live 100% locally and are gitignored.
-3. **Test** (TDD) — Write failing test first.
+3. **Test** (TDD) — Write failing test first (${config.testRunner}).
 4. **Implement** — Make test pass.
 5. **Verify & Audit** — Run \`node tools/audit.js\` or \`python tools/audit.py\`.
 6. **DoD** — Lint, typecheck, tests, coverage, docs, memory.
