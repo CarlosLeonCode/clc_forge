@@ -1,0 +1,30 @@
+{
+  "name": "create-clc-forge",
+  "version": "1.0.0",
+  "description": "CLC Forge — The AI Agent Governance & Quality Engineering Engine by Carlos Leon Code.",
+  "main": "bin/cli.js",
+  "bin": {
+    "create-clc-forge": "./bin/cli.js",
+    "clc-forge": "./bin/cli.js"
+  },
+  "keywords": [
+    "clc-forge",
+    "clc_forge",
+    "carlosleoncode",
+    "agent-governance",
+    "quality-engineering",
+    "sdd-workflow",
+    "clean-architecture",
+    "nextjs",
+    "fastapi",
+    "vitest",
+    "pytest",
+    "husky",
+    "safeguards"
+  ],
+  "author": "Carlos Leon Code",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
