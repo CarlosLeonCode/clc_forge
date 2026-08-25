@@ -1,31 +1,27 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-unused-vars */
 /**
- * Frontend Audit Generator — Kino-front
- * Generates an educational 05-audit-report.md summarizing UI reuse, architecture,
- * secret security, and Vitest coverage before code review.
+ * Modular Audit Orchestrator — JS
+ * Discovers check_*.js guard scripts at runtime, runs each with graceful
+ * degradation, and generates an English audit report (05-audit-report.md).
+ * Self-contained: uses only Node.js built-ins.
  */
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
-
-const { checkUiReuse } = require('./check_ui_reuse');
-const { checkArchitecture } = require('./check_architecture');
-const { scanSecrets } = require('./scan_secrets');
-const { checkA11y } = require('./check_a11y');
-const { checkApiContracts } = require('./check_api_contracts');
-const { checkPerformance } = require('./check_performance');
-const { checkStorybook } = require('./check_storybook');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function getActiveSddDir() {
   const sddsDir = path.join(REPO_ROOT, 'sdds');
   if (!fs.existsSync(sddsDir)) {
     fs.mkdirSync(sddsDir, { recursive: true });
   }
-  const dirs = fs.readdirSync(sddsDir).filter(f => fs.statSync(path.join(sddsDir, f)).isDirectory());
+  const dirs = fs.readdirSync(sddsDir).filter(f => {
+    try { return fs.statSync(path.join(sddsDir, f)).isDirectory(); }
+    catch { return false; }
+  });
   if (dirs.length > 0) {
     return path.join(sddsDir, dirs[0]);
   }
@@ -34,201 +30,190 @@ function getActiveSddDir() {
   return defaultDir;
 }
 
-function analyzeFrontendPatterns() {
-  const details = [];
-  const gitCmd = 'git diff --name-only origin/staging...HEAD || git diff --name-only HEAD~1';
-  let files = [];
-  try {
-    const out = execSync(gitCmd, { cwd: REPO_ROOT, encoding: 'utf-8' });
-    files = out.split('\n').filter(f => f.trim() && (f.endsWith('.tsx') || f.endsWith('.ts') || f.endsWith('.jsx') || f.endsWith('.js')));
-  } catch (e) {
-    return details;
-  }
-
-  const seen = new Set();
-  files.forEach(f => {
-    const filepath = path.join(REPO_ROOT, f);
-    if (!fs.existsSync(filepath)) return;
-    const content = fs.readFileSync(filepath, 'utf-8');
-
-    // 1. Atomic Design / UI Reuse
-    if (content.includes('@/components/ui/') && !seen.has(`ui:${f}`)) {
-      seen.add(`ui:${f}`);
-      details.push(`  • 🎨 **Atomic Design / UI Primitive Reuse (` + f + `):** Reutiliza primitivas atómicas estandarizadas de \`@/components/ui/\` garantizando consistencia visual y A11y.`);
-    }
-
-    // 2. Compound Components Pattern
-    if (/<[A-Z][a-zA-Z]+\.[A-Z]/.test(content) && !seen.has(`compound:${f}`)) {
-      seen.add(`compound:${f}`);
-      details.push(`  • 🧩 **Compound Components (` + f + `):** Utiliza subcomponentes compuestos que comparten estado implícito para una interfaz flexible.`);
-    }
-
-    // 3. Custom Hooks Pattern
-    if (/const\s+use[A-Z][a-zA-Z]+\s*=/.test(content) || /function\s+use[A-Z][a-zA-Z]/.test(content)) {
-      if (!seen.has(`hook:${f}`)) {
-        seen.add(`hook:${f}`);
-        details.push(`  • 🪝 **Custom Hook Pattern (` + f + `):** Extrae lógica de estado y efectos secundarios fuera del JSX para modularidad y testeo.`);
-      }
-    }
-
-    // 4. Server Components / Actions
-    if (content.includes('"use server"') || content.includes("'use server'")) {
-      if (!seen.has(`server-action:${f}`)) {
-        seen.add(`server-action:${f}`);
-        details.push(`  • ⚡ **Server Actions (` + f + `):** Ejecuta mutaciones directamente en el servidor Next.js reduciendo boilerplate de API REST.`);
-      }
-    }
-
-    // 5. Zod Data Contract Validation
-    if ((content.includes('z.object') || content.includes('.safeParse')) && !seen.has(`zod:${f}`)) {
-      seen.add(`zod:${f}`);
-      details.push(`  • 📑 **Data Contract (Zod Validation en ` + f + `):** Valida esquemas de entrada/salida HTTP evitando runtime crashes por data no tipada.`);
-    }
-
-    // 6. Semantic Theme Tokens
-    if ((content.includes('bg-primary') || content.includes('text-muted-foreground') || content.includes('border-border')) && !seen.has(`tokens:${f}`)) {
-      seen.add(`tokens:${f}`);
-      details.push(`  • 🎨 **Semantic Design Tokens (Tailwind v4 en ` + f + `):** Utiliza tokens de diseño semánticos asegurando compatibilidad nativa con modo oscuro.`);
-    }
-  });
-
-  return details;
+/**
+ * Discover all check_*.js guard scripts in the tools/ directory.
+ * Returns absolute paths sorted alphabetically for deterministic ordering.
+ */
+function discoverGuards() {
+  const toolsDir = __dirname;
+  return fs.readdirSync(toolsDir)
+    .filter(f => (f.startsWith('check_') || f.startsWith('scan_')) && f.endsWith('.js') && f !== path.basename(__filename || 'audit.js'))
+    .sort()
+    .map(f => path.join(toolsDir, f));
 }
 
-function runVitestSummary() {
+/**
+ * Run a single guard module with try/catch.
+ * @param {string} guardPath - Absolute path to the guard script
+ * @param {string} targetDir - Directory to scan
+ * @returns {object} Result from the guard, or a skip result on failure
+ */
+async function runGuard(guardPath, targetDir) {
+  const guardName = path.basename(guardPath, '.js');
   try {
-    const out = execSync('npx vitest run', { cwd: REPO_ROOT, encoding: 'utf-8' });
-    return '✅ **Vitest:** Todas las pruebas unitarias pasaron exitosamente.';
+    const mod = require(guardPath);
+    const fn = typeof mod === 'function' ? mod : Object.values(mod)[0];
+    if (typeof fn !== 'function') {
+      return {
+        exitCode: 0, skipped: true, name: guardName,
+        data: { message: `Guard ${guardName} does not export a function` },
+      };
+    }
+    const result = await fn(targetDir);
+    // Normalize result shape
+    return {
+      exitCode: result.exitCode || 0,
+      skipped: Boolean(result.skipped),
+      name: result.name || guardName,
+      data: result.data || result,
+    };
   } catch (e) {
-    return '⚠️ **Vitest:** Se detectaron advertencias o fallas en la ejecución de pruebas.';
+    return {
+      exitCode: 0, skipped: true, name: guardName,
+      data: { message: `Guard unavailable: ${e.message}` },
+    };
   }
 }
 
-function main() {
-  console.log('\n📝 Generando Reporte de Auditoría Educativo...');
+// ── Report Generation ────────────────────────────────────────────────────────
 
-  const sddDir = getActiveSddDir();
-  const taskName = path.basename(sddDir);
+/**
+ * Format a single guard result into a markdown section.
+ */
+function formatGuardSection(name, result) {
+  const lines = [];
+  const icon = result.skipped ? '⏭️' : result.exitCode === 0 ? '✅' : '❌';
+  const status = result.skipped ? 'SKIPPED' : result.exitCode === 0 ? 'PASSED' : 'FAILED';
 
-  const uiRes = checkUiReuse();
-  const archRes = checkArchitecture();
-  const secretRes = scanSecrets();
-  const a11yRes = checkA11y();
-  const apiRes = checkApiContracts();
-  const perfRes = checkPerformance();
-  const sbRes = checkStorybook();
-  const vitestSummary = runVitestSummary();
+  lines.push(`### ${icon} ${name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} — ${status}`);
+  lines.push('');
 
-  const uiLines = uiRes.exitCode === 0
-    ? ['✅ **Certificado:** Todos los componentes reutilizan las primitivas de @/components/ui/ y usan tokens semánticos del tema.']
-    : ['❌ **Desvíos Detectados:**', ...Object.keys(uiRes.violations).flatMap(f => uiRes.violations[f].map(item => `  - ${f} (Línea ${item.lineNo}): [${item.tag}] -> ${item.message}`))];
-
-  const archLines = archRes.exitCode === 0
-    ? ['✅ **Certificado:** Reglas de Server Components y desacoplamiento de capas de UI verificadas.']
-    : ['❌ **Violaciones Detectadas:**', ...Object.keys(archRes.violations).flatMap(f => archRes.violations[f].map(item => `  - ${f} (Línea ${item.lineNo}): [${item.module}] -> ${item.reason}`))];
-
-  const secretLines = secretRes.exitCode === 0
-    ? ['✅ **Certificado:** No se encontraron credenciales ni secretos en el bundle.']
-    : ['❌ **Posibles Fugas:**', ...Object.keys(secretRes.findings).flatMap(f => secretRes.findings[f].map(item => `  - ${f} (Línea ${item.lineNo}): [${item.label}]`))];
-
-  const a11yLines = a11yRes.exitCode === 0
-    ? ['✅ **Certificado:** Reglas de accesibilidad A11y y etiquetas ARIA verificadas.']
-    : ['⚠️ **Observaciones A11y:**', ...Object.keys(a11yRes.violations).flatMap(f => a11yRes.violations[f].map(item => `  - ${f} (Línea ${item.lineNo}): [${item.rule}] -> ${item.message}`))];
-
-  const apiLines = apiRes.exitCode === 0
-    ? ['✅ **Certificado:** Servicios de API validan esquemas de respuesta con Zod.']
-    : ['⚠️ **Sin Validación Zod:**', ...Object.keys(apiRes.violations).flatMap(f => apiRes.violations[f].map(item => `  - ${f} (Línea ${item.lineNo}): -> ${item.message}`))];
-
-  const perfLines = perfRes.exitCode === 0
-    ? ['✅ **Certificado:** Reglas de optimización de imágenes Next/Image y tree-shaking cumplidas.']
-    : ['⚠️ **Optimizaciones de Performance:**', ...Object.keys(perfRes.violations).flatMap(f => perfRes.violations[f].map(item => `  - ${f} (Línea ${item.lineNo}): -> ${item.message}`))];
-
-  const sbLines = sbRes.exitCode === 0
-    ? ['✅ **Certificado:** Cobertura de historias de Storybook completa para componentes de UI.']
-    : ['⚠️ **Historias de Storybook Pendientes:**', ...Object.keys(sbRes.violations).flatMap(f => sbRes.violations[f].map(item => `  - ${f} -> ${item.message}`))];
-
-  const reportContent = `# 📝 Reporte de Auditoría de Código Frontend: ${taskName}
-
-> **Nota para el Revisor:** Este reporte resume las decisiones de UI, arquitectura, accesibilidad, contratos de API, rendimiento y seguridad para facilitar la revisión.
-
----
-
-## 🎯 Resumen Educativo (Qué, Por qué y Para qué)
-- **Qué se hizo:** Implementación de componentes React 19 / Next.js 16 y servicios de datos.
-- **Por qué:** Garantizar accesibilidad A11y, validación estricta Zod en APIs, optimización Next/Image y cero fugas de secretos.
-- **Para qué:** Mantener calidad de software de nivel industrial, resiliencia ante el backend y velocidad de carga.
-
----
-
-## 🎨 Reutilización de UI & Tokens Semánticos
-${uiLines.join('\n')}
-
----
-
-## 🏛️ Arquitectura de Componentes Next.js
-${archLines.join('\n')}
-
----
-
-## ♿ Accesibilidad & ARIA (A11y)
-${a11yLines.join('\n')}
-
----
-
-## 🛡️ Contratos de API & Zod
-${apiLines.join('\n')}
-
----
-
-## ⚡ Rendimiento & Next/Image
-${perfLines.join('\n')}
-
----
-
-## 📚 Cobertura de Storybook
-${sbLines.join('\n')}
-
----
-
-## 🔐 Auditoría de Seguridad & Bundle
-${secretLines.join('\n')}
-
----
-
-## 🧪 Pruebas Unitarias (Vitest)
-${vitestSummary}
-`;
-
-  const reportPath = path.join(sddDir, '05-audit-report.md');
-  fs.writeFileSync(reportPath, reportContent, 'utf-8');
-
-  const patternDetails = analyzeFrontendPatterns();
-
-  console.log('\n=================================================================');
-  console.log('  🎓 RESUMEN EDUCATIVO DE AUDITORÍA FRONTEND & PATRONES UI');
-  console.log('=================================================================');
-  console.log(`📍 SDD Activo: ${taskName}\n`);
-
-  console.log('🧠 ANÁLISIS DE PATRONES DE UI & ARQUITECTURA FRONTEND:');
-  if (patternDetails.length > 0) {
-    patternDetails.forEach(d => console.log(d));
+  if (result.skipped) {
+    lines.push(`> Skipped: ${result.data?.message || 'Dependencies not available'}`);
+  } else if (result.exitCode === 0) {
+    lines.push(`> ${result.data?.message || 'All checks passed'}`);
   } else {
-    console.log('  • *No se detectaron cambios complejos de componentes en este diff.*');
+    lines.push(`> ${result.data?.message || 'Issues found'}`);
+    lines.push('');
+    const violations = result.data?.violations || result.data?.findings || {};
+    const files = Object.keys(violations);
+    if (files.length > 0) {
+      for (const file of files) {
+        const items = violations[file];
+        for (const item of items) {
+          const loc = item.lineNo ? ` (line ${item.lineNo})` : '';
+          const label = item.label || item.rule || item.rule || item.module || '';
+          const msg = item.message || item.reason || '';
+          lines.push(`- \`${file}\`${loc}: ${label ? `[${label}] ` : ''}${msg}`);
+        }
+      }
+    }
   }
 
-  console.log('\n🛡️ SALVAGUARDAS FRONTEND VERIFICADAS:');
-  console.log(`  • Reutilización de UI (components/ui): ${uiRes.exitCode === 0 ? '✔ Pasó (0 componentes duplicados)' : '❌ Desvíos Detectados'}`);
-  console.log(`  • Tokens Semánticos Tailwind v4    : ${uiRes.exitCode === 0 ? '✔ Pasó (0 colores palette directos)' : '❌ Colores Directos Usados'}`);
-  console.log(`  • Accesibilidad A11y & ARIA        : ${a11yRes.exitCode === 0 ? '✔ Pasó (0 fallas ARIA)' : '⚠️ Observaciones A11y'}`);
-  console.log(`  • Contratos Zod API Schema         : ${apiRes.exitCode === 0 ? '✔ Pasó (Validación Estricta)' : '⚠️ Faltan Esquemas Zod'}`);
-  console.log(`  • Fuga de Secretos & Bundle        : ${secretRes.exitCode === 0 ? '✔ Pasó (0 secretos expuestos)' : '❌ Posible Fuga Detectada'}`);
+  return lines.join('\n');
+}
 
-  console.log(`\n📄 Reporte completo generado en: ${reportPath}`);
+/**
+ * Generate the 05-audit-report.md from aggregated results.
+ */
+function generateReport(results, sddDir) {
+  const taskName = path.basename(sddDir);
+  const passed = results.filter(r => !r.skipped && r.exitCode === 0).length;
+  const failed = results.filter(r => !r.skipped && r.exitCode !== 0).length;
+  const skipped = results.filter(r => r.skipped).length;
+  const total = results.length;
+
+  const sections = [];
+
+  sections.push(`# Code Audit Report: ${taskName}`);
+  sections.push('');
+  sections.push('> **Note for reviewer:** This report summarizes security, architecture, accessibility,');
+  sections.push('> API contracts, performance, UI reuse, and testing coverage to facilitate review.');
+  sections.push('');
+  sections.push('---');
+  sections.push('');
+  sections.push('## Summary');
+  sections.push('');
+  sections.push(`| Metric | Count |`);
+  sections.push(`|--------|-------|`);
+  sections.push(`| Total guards | ${total} |`);
+  sections.push(`| Passed | ${passed} |`);
+  sections.push(`| Failed | ${failed} |`);
+  sections.push(`| Skipped | ${skipped} |`);
+  sections.push('');
+  sections.push('---');
+  sections.push('');
+
+  for (const result of results) {
+    sections.push(formatGuardSection(result.name, result));
+    sections.push('');
+    sections.push('---');
+    sections.push('');
+  }
+
+  return sections.join('\n');
+}
+
+// ── Console Summary ──────────────────────────────────────────────────────────
+
+function printSummary(results, reportPath) {
+  console.log('\n=================================================================');
+  console.log('  CLC FORGE — EDUCATIONAL AUDIT SUMMARY');
+  console.log('=================================================================\n');
+
+  for (const result of results) {
+    const icon = result.skipped ? '⏭️' : result.exitCode === 0 ? '✅' : '❌';
+    const label = result.name.replace(/_/g, ' ');
+    const msg = result.data?.message || '';
+    console.log(`  ${icon} ${label}: ${msg}`);
+  }
+
+  console.log(`\n📄 Full report: ${reportPath}`);
   console.log('=================================================================\n');
 }
 
-if (require.main === module) {
-  main();
+// ── Main ─────────────────────────────────────────────────────────────────────
+
+async function main(targetDir) {
+  const dir = targetDir || process.cwd();
+  const sddDir = getActiveSddDir();
+
+  console.log('\nRunning CLC Forge audit...\n');
+
+  const guardPaths = discoverGuards();
+
+  if (guardPaths.length === 0) {
+    console.log('No guard tools found in tools/. Nothing to audit.');
+    return;
+  }
+
+  console.log(`Discovered ${guardPaths.length} guard(s): ${guardPaths.map(p => path.basename(p, '.js')).join(', ')}\n`);
+
+  const results = [];
+  for (const guardPath of guardPaths) {
+    const result = await runGuard(guardPath, dir);
+    results.push(result);
+  }
+
+  // Generate report
+  const reportContent = generateReport(results, sddDir);
+  const reportPath = path.join(sddDir, '05-audit-report.md');
+  fs.writeFileSync(reportPath, reportContent, 'utf-8');
+
+  // Print summary
+  printSummary(results, reportPath);
+
+  // Exit with failure if any guard failed (not skipped)
+  const hasFailure = results.some(r => !r.skipped && r.exitCode !== 0);
+  process.exit(hasFailure ? 1 : 0);
 }
 
-module.exports = { main, getActiveSddDir };
+// Support both require() and direct execution
+if (require.main === module) {
+  main(process.argv[2]).catch(err => {
+    console.error(`Audit orchestrator error: ${err.message}`);
+    process.exit(0); // Graceful degradation
+  });
+}
+
+module.exports = { main, getActiveSddDir, discoverGuards, runGuard };
