@@ -30,5 +30,10 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "test:unit": "node --test test/adapters/*.test.js",
+    "test:coverage": "NODE_V8_COVERAGE=coverage node --test test/**/*.test.js"
   }
 }

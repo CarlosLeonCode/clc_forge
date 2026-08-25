@@ -1,0 +1,96 @@
+const { describe, it } = require('node:test');
+const assert = require('node:assert');
+const { createTmpProject, teardown } = require('../helpers');
+
+describe('LaravelAdapter', () => {
+  const LaravelAdapter = require('../../src/adapters/laravel');
+
+  describe('constructor', () => {
+    it('creates adapter with correct name and projectType', () => {
+      const adapter = new LaravelAdapter();
+      assert.strictEqual(adapter.name, 'PHP / Laravel');
+      assert.strictEqual(adapter.projectType, 'backend');
+      assert.strictEqual(adapter.testRunner, 'Pest / PHPUnit');
+    });
+  });
+
+  describe('detect()', () => {
+    it('returns true when both composer.json and artisan exist', () => {
+      const dir = createTmpProject({
+        'composer.json': JSON.stringify({ require: { 'laravel/framework': '^10.0' } }),
+        'artisan': '#!/usr/bin/env php',
+      });
+      try {
+        const adapter = new LaravelAdapter();
+        assert.strictEqual(adapter.detect(dir), true);
+      } finally {
+        teardown(dir);
+      }
+    });
+
+    it('returns false when only composer.json exists', () => {
+      const dir = createTmpProject({
+        'composer.json': JSON.stringify({ require: {} }),
+      });
+      try {
+        const adapter = new LaravelAdapter();
+        assert.strictEqual(adapter.detect(dir), false);
+      } finally {
+        teardown(dir);
+      }
+    });
+
+    it('returns false when only artisan exists', () => {
+      const dir = createTmpProject({ 'artisan': '#!/usr/bin/env php' });
+      try {
+        const adapter = new LaravelAdapter();
+        assert.strictEqual(adapter.detect(dir), false);
+      } finally {
+        teardown(dir);
+      }
+    });
+
+    it('returns false when directory is empty', () => {
+      const dir = createTmpProject({});
+      try {
+        const adapter = new LaravelAdapter();
+        assert.strictEqual(adapter.detect(dir), false);
+      } finally {
+        teardown(dir);
+      }
+    });
+  });
+
+  describe('getTools()', () => {
+    it('returns array of tool objects with required fields', () => {
+      const adapter = new LaravelAdapter();
+      const tools = adapter.getTools();
+      assert.ok(Array.isArray(tools));
+      assert.ok(tools.length > 0);
+      for (const tool of tools) {
+        assert.ok(tool.name);
+        assert.ok(tool.language);
+        assert.ok(typeof tool.command === 'string');
+        assert.ok(tool.description);
+      }
+    });
+
+    it('all tools are external', () => {
+      const adapter = new LaravelAdapter();
+      const tools = adapter.getTools();
+      for (const tool of tools) {
+        assert.strictEqual(tool.language, 'external');
+        assert.strictEqual(tool.path, '');
+      }
+    });
+  });
+
+  describe('getSafeguards()', () => {
+    it('returns non-empty array of strings', () => {
+      const adapter = new LaravelAdapter();
+      const guards = adapter.getSafeguards();
+      assert.ok(Array.isArray(guards));
+      assert.ok(guards.length >= 5);
+    });
+  });
+});
