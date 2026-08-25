@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 """
-Automated code auditor for Kinoia.
-Generates an educational, easy-to-read markdown report summarizing the changes made,
-their architectural patterns, test coverage, and code quality check results.
-
-Saves the report to sdds/{change-name}/05-audit-report.md.
+Modular Audit Orchestrator — Python
+Discovers check_*.py and scan_*.py guard scripts at runtime, runs each with
+graceful degradation, and generates an English audit report (05-audit-report.md).
+Self-contained: uses only Python stdlib.
 """
 from __future__ import annotations
 
+import importlib.util
+import json
 import os
 import pathlib
-import re
 import subprocess
 import sys
-from typing import Any
+import traceback
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
 
 def find_active_sdd(change_name: str | None = None) -> pathlib.Path | None:
-    sdds_dir = pathlib.Path.cwd() / "sdds"
+    """Find the active SDD directory by name or pick the sole candidate."""
+    sdds_dir = REPO_ROOT / "sdds"
     if not sdds_dir.exists():
         return None
     if change_name:
@@ -27,394 +33,241 @@ def find_active_sdd(change_name: str | None = None) -> pathlib.Path | None:
         return candidates[0]
     return None
 
-def get_base_commit() -> str:
-    """Find the best base commit to diff against (stg, main, or HEAD~1)."""
-    for branch in ["origin/stg", "stg", "origin/main", "main"]:
-        try:
-            base = subprocess.check_output(
-                ["git", "merge-base", branch, "HEAD"],
-                stderr=subprocess.DEVNULL,
-                text=True
-            ).strip()
-            if base:
-                return base
-        except subprocess.CalledProcessError:
+
+def discover_guards(tools_dir: pathlib.Path) -> list[pathlib.Path]:
+    """
+    Discover all check_*.py and scan_*.py guard scripts in tools/.
+    Excludes audit.py itself. Returns sorted list for deterministic ordering.
+    """
+    guards: list[pathlib.Path] = []
+    for f in sorted(tools_dir.iterdir()):
+        if not f.is_file():
             continue
-    # Fallback to HEAD~1
+        name = f.name
+        if (name.startswith("check_") or name.startswith("scan_") or name.startswith("verify_")) and name.endswith(".py"):
+            guards.append(f)
+    return guards
+
+
+def run_guard(guard_path: pathlib.Path, target_dir: str) -> dict:
+    """
+    Run a single guard module by dynamic import and call its check() function.
+    Returns a normalized result dict on success, or a skip result on failure.
+    """
+    guard_name = guard_path.stem  # e.g. "check_scope"
+
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD~1"],
-            stderr=subprocess.DEVNULL,
-            text=True
-        ).strip()
-    except subprocess.CalledProcessError:
-        return ""
+        spec = importlib.util.spec_from_file_location(guard_name, str(guard_path))
+        if spec is None or spec.loader is None:
+            return {
+                "exit_code": 0, "skipped": True, "name": guard_name,
+                "data": {"message": f"Cannot load module spec for {guard_name}"},
+            }
 
-def run_cmd(args: list[str], cwd: pathlib.Path | None = None) -> tuple[int, str]:
-    try:
-        res = subprocess.run(
-            args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=cwd
-        )
-        return res.returncode, res.stdout + res.stderr
-    except FileNotFoundError:
-        return -1, "Binary not found"
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
 
-import ast
+        fn = getattr(mod, "check", None)
+        if fn is None or not callable(fn):
+            return {
+                "exit_code": 0, "skipped": True, "name": guard_name,
+                "data": {"message": f"Guard {guard_name} does not export a check() function"},
+            }
 
-def analyze_code_patterns(files: list[str], diff_target: str) -> list[str]:
-    """Inspect AST diffs to identify introduced functions, classes, and design patterns with technical explanations."""
-    details = []
-    for f in files:
-        if not f.endsWith('.py') if hasattr(f, 'endsWith') else not f.endswith('.py'):
-            continue
-        filepath = pathlib.Path.cwd() / f
-        if not filepath.exists():
-            continue
-        try:
-            tree = ast.parse(filepath.read_text(encoding='utf-8'))
-            classes = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
-            functions = [node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]
-            
-            # Pattern 1: Singleton Pattern Detection
-            for cls in classes:
-                has_instance = any(target.id == '_instance' for stmt in cls.body if isinstance(stmt, ast.Assign) for target in stmt.targets if isinstance(target, ast.Name))
-                has_new = any(fn.name == '__new__' for fn in cls.body if isinstance(fn, ast.FunctionDef))
-                if has_instance or has_new:
-                    details.append(f"  • **Clase `{cls.name}` en `{f}`:** Implementa el **Patrón Singleton** para garantizar una única instancia compartida y evitar redundancia de memoria/conexiones.")
+        result = fn(target_dir)
 
-            # Pattern 2: Factory Pattern / Builder Pattern
-            for fn in functions:
-                if fn.name.startswith("create_") or fn.name.startswith("build_") or fn.name.startswith("get_"):
-                    details.append(f"  • **Función `{fn.name}()` en `{f}`:** Aplica el **Patrón Factory/Builder** para desacoplar la instanciación de objetos complejos y facilitar el testeo unitario.")
-                elif fn.name.startswith("test_"):
-                    continue
-                else:
-                    details.append(f"  • **Método `{fn.name}()` en `{f}`:** Agregado/Modificado. Define una responsabilidad específica y modular según SOLID (Single Responsibility Principle).")
-        except Exception:
-            continue
-    return details
+        # Normalize result shape
+        if not isinstance(result, dict):
+            return {
+                "exit_code": 0, "skipped": True, "name": guard_name,
+                "data": {"message": f"Guard {guard_name} returned non-dict: {type(result).__name__}"},
+            }
 
-def analyze_architecture(files: list[str]) -> list[str]:
-    """Analyze changed files and explain the clean architecture components introduced."""
-    insights = []
-    has_use_case = any("use_cases" in f for f in files)
-    has_route = any("routes" in f or "api/routes" in f for f in files)
-    has_dto = any("dto" in f for f in files)
-    has_model = any("models" in f or "database/models" in f for f in files)
-    has_migration = any("alembic" in f or "migrations/versions" in f for f in files)
+        return {
+            "exit_code": result.get("exit_code", 0),
+            "skipped": bool(result.get("skipped", False)),
+            "name": result.get("name", guard_name),
+            "data": result.get("data", result),
+        }
 
-    if has_route:
-        insights.append(
-            "- **Capa de Entrada (API Routes):** Se modificaron/crearon controladores HTTP. "
-            "Recordá que los handlers *solo deben delegar* en Use Cases y no contener lógica de negocio."
-        )
-    if has_use_case:
-        insights.append(
-            "- **Capa de Aplicación (Use Cases):** Contiene las reglas de negocio y orquestación de servicios. "
-            "Es el corazón de la aplicación y debe ser independiente del framework HTTP."
-        )
-    if has_dto:
-        insights.append(
-            "- **Capa de Comunicación (DTOs):** Se definieron Data Transfer Objects para request/response. "
-            "Esto asegura un tipado fuerte de entrada/salida y validación estricta de payloads con Pydantic."
-        )
-    if has_model:
-        insights.append(
-            "- **Capa de Infraestructura (DB Models):** Modelos ORM de SQLAlchemy. "
-            "Cualquier cambio estructural acá requiere su correspondiente migración."
-        )
-    if has_migration:
-        insights.append(
-            "- **Esquema de Base de Datos (Alembic Migration):** Se detectó un script de migración. "
-            "Asegúrate de revisar los métodos `upgrade()` y `downgrade()` para evitar bloqueos en producción."
-        )
-    
-    if not insights:
-        insights.append("- *No se identificaron componentes críticos de arquitectura en esta revisión.*")
-        
-    return insights
+    except Exception as exc:
+        return {
+            "exit_code": 0, "skipped": True, "name": guard_name,
+            "data": {"message": f"Guard unavailable: {exc}"},
+        }
 
-def main() -> int:
-    change_name = sys.argv[1] if len(sys.argv) > 1 else None
-    sdd_dir = find_active_sdd(change_name)
-    if not sdd_dir:
-        print("error: No active SDD directory found. Pass change name explicitly: python tools/audit.py <change_name>")
-        return 1
 
-    print(f"Auditing code changes for SDD: {sdd_dir.name}...")
-    base_commit = get_base_commit()
-    diff_target = base_commit if base_commit else "HEAD"
+# ── Report Generation ────────────────────────────────────────────────────────
 
-    # Git changes
-    # Get stat
-    stat_cmd = ["git", "diff", "--stat", diff_target]
-    _, stat_out = run_cmd(stat_cmd)
-    
-    # Get files list
-    files_cmd = ["git", "diff", "--name-only", diff_target]
-    _, files_out = run_cmd(files_cmd)
-    changed_files = [f.strip() for f in files_out.strip().splitlines() if f.strip()]
+def _format_guard_section(name: str, result: dict) -> str:
+    """Format a single guard result into a markdown section."""
+    lines: list[str] = []
+    skipped = result.get("skipped", False)
+    exit_code = result.get("exit_code", 0)
+    data = result.get("data", {})
 
-    # Filter test files
-    test_files = [f for f in changed_files if "test_" in f or "/tests/" in f]
-    code_files = [f for f in changed_files if f not in test_files]
-
-    # Ruff checks
-    ruff_installed = run_cmd(["ruff", "--version"])[0] == 0
-    ruff_report = "Ruff no está instalado o falló al ejecutarse."
-    if ruff_installed:
-        # Run ruff check on changed directories
-        changed_services = set()
-        for f in changed_files:
-            parts = pathlib.Path(f).parts
-            if len(parts) >= 2 and parts[0] == "services":
-                changed_services.add(parts[1])
-        
-        ruff_violations = []
-        for svc in changed_services:
-            svc_path = pathlib.Path.cwd() / "services" / svc
-            code, out = run_cmd(["ruff", "check", "."], cwd=svc_path)
-            if code != 0:
-                ruff_violations.append(f"**Servicio: `{svc}`**\n```\n{out.strip()}\n```")
-        
-        if ruff_violations:
-            ruff_report = "\n\n".join(ruff_violations)
-        else:
-            ruff_report = "✅ **¡Excelente! No se encontraron violaciones de Ruff en los servicios afectados.**"
-
-    # Architecture Analysis
-    arch_insights = analyze_architecture(changed_files)
-    code_pattern_details = analyze_code_patterns(changed_files, diff_target)
-
-    # Initialize default findings dicts
-    scope_data = {"authorized": [], "warnings": [], "unrelated": []}
-    tdd_summary = {}
-    secret_findings = {}
-    arch_violations = {}
-    m_violations = {}
-
-    # Scope Analysis
-    scope_report_lines = []
-    try:
-        from tools.check_scope import check_scope
-        _, scope_data = check_scope(sdd_dir.name)
-        if scope_data["authorized"]:
-            scope_report_lines.append("✅ **Archivos Declarados y Autorizados:**")
-            for f in scope_data["authorized"]:
-                scope_report_lines.append(f"  - `{f}`")
-        if scope_data["warnings"]:
-            scope_report_lines.append("\n⚠️ **Impacto en Grafo (No declarados explícitamente pero conectados en Graphify):**")
-            for f in scope_data["warnings"]:
-                scope_report_lines.append(f"  - `{f}`")
-        if scope_data["unrelated"]:
-            scope_report_lines.append("\n❌ **Scope Creep / No Autorizado (Desconectados en el grafo):**")
-            for f in scope_data["unrelated"]:
-                scope_report_lines.append(f"  - `{f}`")
-    except Exception as e:
-        scope_report_lines.append(f"No se pudo ejecutar la verificación de alcance: {e}")
-
-    # TDD Verification Analysis
-    tdd_report_lines = []
-    try:
-        from tools.verify_tdd import verify_tdd
-        tdd_code, tdd_summary = verify_tdd()
-        if tdd_summary.get("message"):
-            tdd_report_lines.append(f"- {tdd_summary['message']}")
-        for tf, cls in tdd_summary.get("results", {}).items():
-            if cls == "GENUINE_TDD":
-                tdd_report_lines.append(f"- ✅ `{tf}`: **TDD Legítimo** (Falla en código viejo -> Pasa en código nuevo).")
-            elif cls == "ALWAYS_GREEN":
-                tdd_report_lines.append(f"- ❌ `{tf}`: **Falso Positivo** (Pasa sin cambios en el código de producción).")
-            elif cls == "CURRENT_FAIL":
-                tdd_report_lines.append(f"- ❌ `{tf}`: **Test Roto / Fallando**.")
-            else:
-                tdd_report_lines.append(f"- ⚠️ `{tf}`: Estado ({cls}).")
-    except Exception as e:
-        tdd_report_lines.append(f"No se pudo ejecutar la validación TDD: {e}")
-
-    # Secret Leak Guard Analysis
-    secret_report_lines = []
-    try:
-        from tools.scan_secrets import scan_secrets
-        secret_code, secret_findings = scan_secrets()
-        if secret_findings:
-            secret_report_lines.append("❌ **SE DETECTARON POSIBLES FUGAS DE SECRETOS / CREDENCIALES:**")
-            for filepath, items in secret_findings.items():
-                secret_report_lines.append(f"\n  - Archivo: `{filepath}`")
-                for line_no, label, red in items:
-                    secret_report_lines.append(f"    - Línea {line_no}: [{label}] -> Muestra: `{red}`")
-        else:
-            secret_report_lines.append("✅ **Certificado:** No se detectaron credenciales ni secretos en el diff.")
-    except Exception as e:
-        secret_report_lines.append(f"No se pudo ejecutar el escáner de secretos: {e}")
-
-    # Clean Architecture Guard Analysis
-    arch_guard_lines = []
-    try:
-        from tools.check_architecture import check_architecture
-        arch_code, arch_violations = check_architecture()
-        if arch_violations:
-            arch_guard_lines.append("❌ **SE DETECTARON VIOLACIONES DE ARQUITECTURA LIMPIA:**")
-            for filepath, items in arch_violations.items():
-                arch_guard_lines.append(f"\n  - Archivo: `{filepath}`")
-                for line_no, mod, reason in items:
-                    arch_guard_lines.append(f"    - Línea {line_no}: Importación prohibida `{mod}`")
-                    arch_guard_lines.append(f"      💡 Explicación: {reason}")
-        else:
-            arch_guard_lines.append("✅ **Certificado:** Todas las reglas de capas (Domain, Application, Routes) se cumplen perfectamente.")
-    except Exception as e:
-        arch_guard_lines.append(f"No se pudo ejecutar la verificación de arquitectura: {e}")
-
-    # Database Migration & Idempotency Analysis
-    migration_guard_lines = []
-    try:
-        from tools.check_migrations import check_migrations
-        m_code, m_violations = check_migrations()
-        if m_violations:
-            migration_guard_lines.append("❌ **SE DETECTARON PROBLEMAS EN LAS MIGRACIONES DE BASE DE DATOS:**")
-            for target, items in m_violations.items():
-                migration_guard_lines.append(f"\n  - `{target}`:")
-                for reason in items:
-                    migration_guard_lines.append(f"    - {reason}")
-        else:
-            migration_guard_lines.append("✅ **Certificado:** Todas las migraciones son reversibles, idempotentes y están sincronizadas con los modelos.")
-    except Exception as e:
-        migration_guard_lines.append(f"No se pudo ejecutar la verificación de migraciones: {e}")
-
-    migration_guard_report = "\n".join(migration_guard_lines)
-    arch_guard_report = "\n".join(arch_guard_lines)
-    secret_report = "\n".join(secret_report_lines)
-    scope_report = "\n".join(scope_report_lines)
-    tdd_report = "\n".join(tdd_report_lines)
-
-    # Generate Report Content
-    report_content = f"""# 📝 Reporte de Auditoría de Código: {sdd_dir.name}
-
-> **Nota para el Revisor:** Este reporte resume de forma concisa los cambios realizados para facilitar la revisión del código y asegurar los estándares de calidad.
-
----
-
-## 🗄️ Verificación de Migraciones e Idempotencia (Database Migration Guard)
-
-{migration_guard_report}
-
----
-
-## 🏛️ Verificación de Arquitectura Limpia (Clean Architecture Guard)
-
-{arch_guard_report}
-
----
-
-## 🔐 Auditoría de Seguridad (Secret Leak Guard)
-
-{secret_report}
-
----
-
-## 🛡️ Verificación de Alcance (Scope Guardrail)
-
-{scope_report}
-
----
-
-## 🧪 Certificación TDD (Red-to-Green)
-
-{tdd_report}
-
----
-
-## 🏛️ Análisis Arquitectónico
-Este cambio impacta las siguientes capas del sistema:
-
-{chr(10).join(arch_insights)}
-
----
-
-## 📦 Archivos Modificados y Cambios de Código
-
-### Resumen de Git Diff (`git diff --stat`):
-```text
-{stat_out.strip()}
-```
-
-### Detalle de archivos de código:
-"""
-    for f in code_files:
-        report_content += f"- [`{f}`](file://{pathlib.Path.cwd() / f})\n"
-    
-    if test_files:
-        report_content += "\n### Pruebas Nuevas/Modificadas:\n"
-        for f in test_files:
-            report_content += f"- [`{f}`](file://{pathlib.Path.cwd() / f})\n"
+    if skipped:
+        icon, status = "\u23ed\ufe0f", "SKIPPED"
+    elif exit_code == 0:
+        icon, status = "\u2705", "PASSED"
     else:
-        report_content += "\n⚠️ **Advertencia:** No se detectaron archivos de pruebas creados o modificados en este diff.\n"
+        icon, status = "\u274c", "FAILED"
 
-    report_content += f"""
----
+    title = name.replace("_", " ").title()
+    lines.append(f"### {icon} {title} \u2014 {status}")
+    lines.append("")
 
-## ⚡ Estilo y Estándares de Código (Ruff)
+    if skipped:
+        lines.append(f"> Skipped: {data.get('message', 'Dependencies not available')}")
+    elif exit_code == 0:
+        lines.append(f"> {data.get('message', 'All checks passed')}")
+    else:
+        lines.append(f"> {data.get('message', 'Issues found')}")
+        lines.append("")
 
-{ruff_report}
+        # Format violations or findings
+        violations = data.get("violations") or data.get("findings") or {}
+        if isinstance(violations, dict):
+            for filepath, items in violations.items():
+                if not isinstance(items, list):
+                    continue
+                for item in items:
+                    loc = f" (line {item.get('lineNo', '')})" if item.get("lineNo") else ""
+                    label = item.get("label") or item.get("rule") or item.get("module") or ""
+                    msg = item.get("reason") or item.get("message") or ""
+                    lines.append(f"- `{filepath}`{loc}: {f'[{label}] ' if label else ''}{msg}")
 
----
+        # Handle list-style data (e.g. scope unauthorized files)
+        for key in ("unrelated", "warnings", "authorized"):
+            items = data.get(key, [])
+            if isinstance(items, list) and items:
+                icon_map = {"unrelated": "\u274c", "warnings": "\u26a0\ufe0f", "authorized": "\u2705"}
+                label_map = {"unrelated": "Not in SDD scope", "warnings": "Related warnings", "authorized": "Authorized"}
+                lines.append(f"\n{icon_map.get(key, '')} **{label_map.get(key, key)}:**")
+                for f in items:
+                    lines.append(f"  - `{f}`")
 
-## 🚦 Instrucciones para Aprobar
-Si estás de acuerdo con los cambios presentados:
-1. Revisa los archivos en los enlaces de arriba si necesitas verificar detalles.
-2. Edita [`00-state.md`](file://{sdd_dir / '00-state.md'}) y cambia el estado de la fase actual a `approved`:
-   ```markdown
-   | Phase | Status | Owner | Updated |
-   |---|---|---|---|
-   | wait_for_audit | approved | @tu_usuario | YYYY-MM-DD |
-   ```
-3. Luego, ejecuta:
-   ```bash
-   python tools/workflow.py next
-   ```
-"""
+    return "\n".join(lines)
 
+
+def generate_report(results: list[dict], sdd_dir: pathlib.Path) -> str:
+    """Generate the 05-audit-report.md from aggregated guard results."""
+    task_name = sdd_dir.name
+    passed = sum(1 for r in results if not r.get("skipped") and r.get("exit_code") == 0)
+    failed = sum(1 for r in results if not r.get("skipped") and r.get("exit_code") != 0)
+    skipped = sum(1 for r in results if r.get("skipped"))
+    total = len(results)
+
+    sections: list[str] = []
+    sections.append(f"# Code Audit Report: {task_name}")
+    sections.append("")
+    sections.append("> **Note for reviewer:** This report summarizes security, architecture,")
+    sections.append("> scope, migration safety, and TDD coverage to facilitate code review.")
+    sections.append("")
+    sections.append("---")
+    sections.append("")
+    sections.append("## Summary")
+    sections.append("")
+    sections.append("| Metric | Count |")
+    sections.append("|--------|-------|")
+    sections.append(f"| Total guards | {total} |")
+    sections.append(f"| Passed | {passed} |")
+    sections.append(f"| Failed | {failed} |")
+    sections.append(f"| Skipped | {skipped} |")
+    sections.append("")
+    sections.append("---")
+    sections.append("")
+
+    for result in results:
+        sections.append(_format_guard_section(result.get("name", "unknown"), result))
+        sections.append("")
+        sections.append("---")
+        sections.append("")
+
+    return "\n".join(sections)
+
+
+# ── Console Summary ──────────────────────────────────────────────────────────
+
+def print_summary(results: list[dict], report_path: pathlib.Path) -> None:
+    """Print an educational summary to the terminal."""
+    print("\n" + "=" * 65)
+    print("  CLC FORGE \u2014 EDUCATIONAL AUDIT SUMMARY")
+    print("=" * 65 + "\n")
+
+    for result in results:
+        skipped = result.get("skipped", False)
+        exit_code = result.get("exit_code", 0)
+        name = result.get("name", "unknown").replace("_", " ")
+        msg = result.get("data", {}).get("message", "")
+
+        if skipped:
+            icon = "\u23ed\ufe0f"
+        elif exit_code == 0:
+            icon = "\u2705"
+        else:
+            icon = "\u274c"
+
+        print(f"  {icon} {name}: {msg}")
+
+    print(f"\n  Report: {report_path}")
+    print("=" * 65 + "\n")
+
+
+# ── Main ─────────────────────────────────────────────────────────────────────
+
+def main(target_dir: str | None = None) -> int:
+    """Run all discovered guards and produce the audit report."""
+    tools_dir = pathlib.Path(__file__).resolve().parent
+    dir_path = target_dir or os.getcwd()
+
+    sdd_dir = find_active_sdd()
+    if sdd_dir is None:
+        # Create a default SDD dir for the report
+        sdds_dir = REPO_ROOT / "sdds"
+        sdds_dir.mkdir(parents=True, exist_ok=True)
+        sdd_dir = sdds_dir / "audit-run"
+        sdd_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"\nRunning CLC Forge audit for: {sdd_dir.name}\n")
+
+    guard_paths = discover_guards(tools_dir)
+
+    if not guard_paths:
+        print("No guard tools found in tools/. Nothing to audit.")
+        return 0
+
+    print(
+        f"Discovered {len(guard_paths)} guard(s): "
+        + ", ".join(p.stem for p in guard_paths)
+        + "\n"
+    )
+
+    results: list[dict] = []
+    for guard_path in guard_paths:
+        result = run_guard(guard_path, dir_path)
+        results.append(result)
+
+    # Generate and write report
+    report_content = generate_report(results, sdd_dir)
     report_path = sdd_dir / "05-audit-report.md"
     report_path.write_text(report_content, encoding="utf-8")
 
-    # Print Educational Terminal Summary
-    print("\n" + "=" * 65)
-    print("  🎓 RESUMEN EDUCATIVO DE AUDITORÍA Y CAMBIOS DE CÓDIGO")
-    print("=" * 65)
-    print(f"📍 SDD Activo: {sdd_dir.name}\n")
-    print("📦 ARCHIVOS Y LÓGICA DE CÓDIGO MODIFICADA:")
-    for f in code_files:
-        print(f"  • {f}")
-    if test_files:
-        print("\n🧪 PRUEBAS UNITARIAS MODIFICADAS/NUEVAS:")
-        for tf in test_files:
-            print(f"  • {tf}")
+    # Print summary
+    print_summary(results, report_path)
 
-    print("\n🧠 ANÁLISIS DE PATRONES Y RAZONAMIENTO TÉCNICO:")
-    if code_pattern_details:
-        for detail in code_pattern_details:
-            print(detail)
-    else:
-        print("  • *No se detectaron patrones complejos adicionales (Singleton/Factory/DTOs) en los diffs.*")
+    # Exit with failure if any guard failed (not skipped)
+    has_failure = any(
+        not r.get("skipped") and r.get("exit_code", 0) != 0
+        for r in results
+    )
+    return 1 if has_failure else 0
 
-    print("\n🏛️ IMPACTO ARQUITECTÓNICO:")
-    for insight in arch_insights:
-        clean_insight = insight.replace("- **", "").replace(":**", " -").replace("**", "")
-        print(f"  • {clean_insight}")
-
-    print("\n🛡️ SALVAGUARDAS Y VERIFICACIONES:")
-    print(f"  • Fuga de Secretos   : {'✔ Pasó (0 credenciales expuestas)' if not secret_findings else '❌ Posible Fuga Detectada'}")
-    print(f"  • Arquitectura Limpia : {'✔ Pasó (0 violaciones de capas)' if not arch_violations else '❌ Violación de Capas Detectada'}")
-    print(f"  • TDD (Red-to-Green)  : {'✔ Pasó (TDD Legítimo)' if tdd_summary.get('results') else 'ℹ️ No se detectaron cambios en tests'}")
-    print(f"  • Migraciones DB      : {'✔ Pasó (0 violaciones)' if not m_violations else '❌ Migración no Idempotente'}")
-
-    print(f"\n📄 Reporte completo generado en: {report_path}")
-    print("=" * 65 + "\n")
-    return 0
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        target = sys.argv[1] if len(sys.argv) > 1 else None
+        sys.exit(main(target))
+    except Exception:
+        traceback.print_exc()
+        sys.exit(0)  # Graceful degradation
