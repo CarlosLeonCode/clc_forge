@@ -75,10 +75,8 @@ ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
 `;
   fs.writeFileSync(path.join(targetDir, 'AGENTS.md'), agentsContent, 'utf-8');
 
-  // 4. Copy tools from source template
-  const sourceToolsDir = isFront
-    ? path.join('/Users/carlosleoncodepro/Dev/kino/Kino-front', 'tools')
-    : path.join('/Users/carlosleoncodepro/Dev/kino/Kino-back', 'tools');
+  // 4. Copy tools from package's bundled tools directory
+  const sourceToolsDir = path.join(__dirname, '..', 'tools');
 
   if (fs.existsSync(sourceToolsDir)) {
     fs.readdirSync(sourceToolsDir).forEach(file => {
