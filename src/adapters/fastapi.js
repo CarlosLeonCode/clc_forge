@@ -51,6 +51,7 @@ class FastApiAdapter extends BaseAdapter {
       { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
       { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Clean Architecture layer boundaries' },
       { name: 'check_migrations',   language: 'py',       path: 'check_migrations.py',   command: 'python3 tools/check_migrations.py',   description: 'Checks Alembic migration idempotency' },
+      { name: 'check_custom',        language: 'python',   path: 'check_custom.py',       command: 'python3 tools/check_custom.py',     description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
       { name: 'pytest',             language: 'external', path: '', command: 'pytest',                   description: 'Test runner', extCLI: 'pytest' },
     ];

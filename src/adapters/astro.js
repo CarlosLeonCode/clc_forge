@@ -47,6 +47,7 @@ class AstroAdapter extends BaseAdapter {
     return [
       { name: 'scan_secrets', language: 'js',       path: 'scan_secrets.js', command: 'node tools/scan_secrets.js', description: 'Scans for leaked secrets and API keys' },
       { name: 'check_a11y',   language: 'js',       path: 'check_a11y.js',   command: 'node tools/check_a11y.js',   description: 'Validates ARIA and accessibility rules' },
+      { name: 'check_custom', language: 'js',       path: 'check_custom.js', command: 'node tools/check_custom.js', description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'astro_check',  language: 'external', path: '', command: 'npx astro check', description: 'Astro type checking', extCLI: 'astro' },
       { name: 'vitest',       language: 'external', path: '', command: 'npx vitest run',  description: 'Test runner', extCLI: 'vitest' },
     ];

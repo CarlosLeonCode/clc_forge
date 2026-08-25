@@ -100,7 +100,7 @@ function installToolsFromManifest(targetDir, manifest, config) {
  */
 function installFallbackTools(targetDir) {
   const sourceToolsDir = path.join(__dirname, '..', 'tools');
-  const fallbackFiles = ['audit.js', 'audit.py', 'scan_secrets.js', 'scan_secrets.py'];
+  const fallbackFiles = ['audit.js', 'audit.py', 'scan_secrets.js', 'scan_secrets.py', 'check_custom.js', 'check_custom.py'];
 
   fallbackFiles.forEach(file => {
     const srcFile = path.join(sourceToolsDir, file);
