@@ -30,21 +30,22 @@ class RailsAdapter extends BaseAdapter {
     ];
   }
 
+  /**
+   * Returns the tool manifest for Rails projects.
+   * External CLIs only — no custom guard scripts bundled.
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [
+      { name: 'rubocop',  language: 'external', path: '', command: 'bundle exec rubocop --parallel', description: 'Ruby linter', extCLI: 'rubocop' },
+      { name: 'brakeman', language: 'external', path: '', command: 'bundle exec brakeman -q',        description: 'Rails vulnerability scanner', extCLI: 'brakeman' },
+      { name: 'rspec',    language: 'external', path: '', command: 'bundle exec rspec',               description: 'Test runner', extCLI: 'rspec' },
+    ];
+  }
+
   provision(targetDir, config) {
     super.provision(targetDir, config);
-
-    // Create Rails pre-commit hook
-    const githooksDir = path.join(targetDir, '.githooks');
-    fs.mkdirSync(githooksDir, { recursive: true });
-    const preCommitPath = path.join(githooksDir, 'pre-commit');
-    const content = `#!/usr/bin/env bash
-echo "💎 Running CLC Forge Rails Safeguards..."
-bundle exec rubocop --parallel
-bundle exec brakeman -q
-bundle exec rspec
-`;
-    fs.writeFileSync(preCommitPath, content, 'utf-8');
-    try { fs.chmodSync(preCommitPath, '755'); } catch (e) {}
+    // Pre-commit hook generation moved to generator.js via getTools() manifest
   }
 }
 

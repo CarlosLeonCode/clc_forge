@@ -29,19 +29,21 @@ class LaravelAdapter extends BaseAdapter {
     ];
   }
 
+  /**
+   * Returns the tool manifest for Laravel projects.
+   * External CLIs only — no custom guard scripts bundled.
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [
+      { name: 'phpstan',  language: 'external', path: '', command: './vendor/bin/phpstan analyse', description: 'PHP static analysis', extCLI: 'phpstan' },
+      { name: 'artisan',  language: 'external', path: '', command: 'php artisan test',            description: 'Laravel test runner', extCLI: 'artisan' },
+    ];
+  }
+
   provision(targetDir, config) {
     super.provision(targetDir, config);
-
-    const githooksDir = path.join(targetDir, '.githooks');
-    fs.mkdirSync(githooksDir, { recursive: true });
-    const preCommitPath = path.join(githooksDir, 'pre-commit');
-    const content = `#!/usr/bin/env bash
-echo "🐘 Running CLC Forge Laravel Safeguards..."
-./vendor/bin/phpstan analyse
-php artisan test
-`;
-    fs.writeFileSync(preCommitPath, content, 'utf-8');
-    try { fs.chmodSync(preCommitPath, '755'); } catch (e) {}
+    // Pre-commit hook generation moved to generator.js via getTools() manifest
   }
 }
 

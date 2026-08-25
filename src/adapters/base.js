@@ -23,6 +23,16 @@ class BaseAdapter {
     return [];
   }
 
+  /**
+   * Returns the tool manifest for this adapter.
+   * Each entry describes one pre-commit tool (script or external CLI).
+   * Override in subclasses to declare stack-specific tools.
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [];
+  }
+
   provision(targetDir, config) {
     // 1. Create docs/ and sdds/
     fs.mkdirSync(path.join(targetDir, 'docs', 'Journal'), { recursive: true });

@@ -40,27 +40,26 @@ class NextjsAdapter extends BaseAdapter {
     ];
   }
 
+  /**
+   * Returns the tool manifest for Next.js projects.
+   * Includes JS guard scripts and external CLI tools (tsc, lint-staged).
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [
+      { name: 'scan_secrets',       language: 'js',       path: 'scan_secrets.js',       command: 'node tools/scan_secrets.js',       description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_a11y',         language: 'js',       path: 'check_a11y.js',         command: 'node tools/check_a11y.js',         description: 'Validates ARIA and accessibility rules' },
+      { name: 'check_ui_reuse',     language: 'js',       path: 'check_ui_reuse.js',     command: 'node tools/check_ui_reuse.js',     description: 'Enforces UI primitive reuse from components/ui/' },
+      { name: 'check_architecture', language: 'js',       path: 'check_architecture.js', command: 'node tools/check_architecture.js', description: 'Validates Next.js Server Component boundaries' },
+      { name: 'check_performance',  language: 'js',       path: 'check_performance.js',  command: 'node tools/check_performance.js',  description: 'Checks next/image and bundle optimization' },
+      { name: 'tsc',                language: 'external', path: '', command: 'npx tsc --noEmit',        description: 'TypeScript type checking', extCLI: 'tsc' },
+      { name: 'lint',               language: 'external', path: '', command: 'npx lint-staged',         description: 'Lint staged files', extCLI: 'lint-staged' },
+    ];
+  }
+
   provision(targetDir, config) {
     super.provision(targetDir, config);
-
-    const huskyDir = path.join(targetDir, '.husky');
-    fs.mkdirSync(huskyDir, { recursive: true });
-    const preCommitPath = path.join(huskyDir, 'pre-commit');
-    const content = `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-node tools/check_ui_reuse.js
-node tools/check_architecture.js
-node tools/scan_secrets.js
-node tools/check_a11y.js
-node tools/check_api_contracts.js
-node tools/check_performance.js
-node tools/check_storybook.js
-npx tsc --noEmit
-npx lint-staged
-`;
-    fs.writeFileSync(preCommitPath, content, 'utf-8');
-    try { fs.chmodSync(preCommitPath, '755'); } catch (e) {}
+    // Pre-commit hook generation moved to generator.js via getTools() manifest
   }
 }
 

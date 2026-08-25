@@ -38,20 +38,23 @@ class AstroAdapter extends BaseAdapter {
     ];
   }
 
+  /**
+   * Returns the tool manifest for Astro projects.
+   * Includes JS guard scripts and external CLI tools (astro check, vitest).
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [
+      { name: 'scan_secrets', language: 'js',       path: 'scan_secrets.js', command: 'node tools/scan_secrets.js', description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_a11y',   language: 'js',       path: 'check_a11y.js',   command: 'node tools/check_a11y.js',   description: 'Validates ARIA and accessibility rules' },
+      { name: 'astro_check',  language: 'external', path: '', command: 'npx astro check', description: 'Astro type checking', extCLI: 'astro' },
+      { name: 'vitest',       language: 'external', path: '', command: 'npx vitest run',  description: 'Test runner', extCLI: 'vitest' },
+    ];
+  }
+
   provision(targetDir, config) {
     super.provision(targetDir, config);
-
-    const huskyDir = path.join(targetDir, '.husky');
-    fs.mkdirSync(huskyDir, { recursive: true });
-    const preCommitPath = path.join(huskyDir, 'pre-commit');
-    const content = `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npx astro check
-npx vitest run
-`;
-    fs.writeFileSync(preCommitPath, content, 'utf-8');
-    try { fs.chmodSync(preCommitPath, '755'); } catch (e) {}
+    // Pre-commit hook generation moved to generator.js via getTools() manifest
   }
 }
 

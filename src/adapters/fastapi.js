@@ -41,22 +41,24 @@ class FastApiAdapter extends BaseAdapter {
     ];
   }
 
+  /**
+   * Returns the tool manifest for FastAPI projects.
+   * Includes Python guard scripts and external CLI tools (ruff, pytest).
+   * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
+   */
+  getTools() {
+    return [
+      { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Clean Architecture layer boundaries' },
+      { name: 'check_migrations',   language: 'py',       path: 'check_migrations.py',   command: 'python3 tools/check_migrations.py',   description: 'Checks Alembic migration idempotency' },
+      { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
+      { name: 'pytest',             language: 'external', path: '', command: 'pytest',                   description: 'Test runner', extCLI: 'pytest' },
+    ];
+  }
+
   provision(targetDir, config) {
     super.provision(targetDir, config);
-
-    const githooksDir = path.join(targetDir, '.githooks');
-    fs.mkdirSync(githooksDir, { recursive: true });
-    const preCommitPath = path.join(githooksDir, 'pre-commit');
-    const content = `#!/usr/bin/env bash
-echo "⚡ Running CLC Forge FastAPI Safeguards..."
-python3 tools/scan_secrets.py
-python3 tools/check_scope.py
-python3 tools/check_architecture.py
-python3 tools/check_migrations.py
-pytest
-`;
-    fs.writeFileSync(preCommitPath, content, 'utf-8');
-    try { fs.chmodSync(preCommitPath, '755'); } catch (e) {}
+    // Pre-commit hook generation moved to generator.js via getTools() manifest
   }
 }
 
