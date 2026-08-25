@@ -37,6 +37,15 @@ function generateHarness(targetDir, config) {
 This document is the **authoritative law** for AI agents working in this repository.
 Forged by **CLC Forge: The AI Agent Governance Engine**.
 
+> 🚨 **RULE #0: MANDATORY EXECUTION OVERRIDE RULE (UNBYPASSABLE)**
+> Even when the user issues a direct or urgent fix request ("fix this bug", "fix this error", "quick fix"):
+> YOU ARE STRICTLY FORBIDDEN from modifying source code directly without completing the full quality harness:
+> 1. **Research & Root Cause Analysis:** Investigate tracebacks and inspect affected files before editing.
+> 2. **TDD Verification (Red Phase):** Write a failing regression test first (${config.testRunner}).
+> 3. **Clean Architecture Implementation (Green Phase):** Make the test pass maintaining layer isolation.
+> 4. **Mandatory Educational Audit Gate:** Execute \`node tools/audit.js\` or \`python tools/audit.py\` and output the Educational Code Summary to stdout.
+> NEVER declare success or skip verification commands for quick fixes.
+
 ## 1. The Loop (Every Task)
 1. **Research** — Inspect codebase / docs before writing code.
 2. **Plan** — Write an SDD under \`sdds/{change-name}/\`. SDDs live 100% locally and are gitignored.
