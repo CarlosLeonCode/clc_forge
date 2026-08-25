@@ -50,13 +50,23 @@ describe('GoAdapter', () => {
       }
     });
 
-    it('all tools are external', () => {
+    it('all external tools have language=external and empty path', () => {
       const adapter = new GoAdapter();
       const tools = adapter.getTools();
-      for (const tool of tools) {
+      const externalTools = tools.filter((t) => t.language === 'external');
+      for (const tool of externalTools) {
         assert.strictEqual(tool.language, 'external');
         assert.strictEqual(tool.path, '');
       }
+    });
+
+    it('includes custom rules guard', () => {
+      const adapter = new GoAdapter();
+      const tools = adapter.getTools();
+      const customTool = tools.find((t) => t.name === 'check_custom');
+      assert.ok(customTool, 'check_custom tool should exist');
+      assert.strictEqual(customTool.language, 'js');
+      assert.strictEqual(customTool.path, 'check_custom.js');
     });
   });
 
