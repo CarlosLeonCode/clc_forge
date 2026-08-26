@@ -15,6 +15,7 @@ const RailsAdapter = require('./adapters/rails');
 const GoAdapter = require('./adapters/go');
 const RustAdapter = require('./adapters/rust');
 const LaravelAdapter = require('./adapters/laravel');
+const { TechnologyDetector } = require('./technologies/detector');
 
 const adapters = [
   new NextjsAdapter(),
@@ -31,6 +32,11 @@ function autoDetectStack(targetDir) {
   // 1. Check registered polyglot adapters
   for (const adapter of adapters) {
     if (adapter.detect(targetDir)) {
+      // Detect Phase-1 technologies (Celery, Redis, PostgreSQL, Docker)
+      const techDetector = new TechnologyDetector();
+      const detectedTechs = techDetector.detect(targetDir);
+      const techTools = techDetector.getToolsForTech(detectedTechs);
+
       return {
         projectType: adapter.projectType,
         framework: adapter.name,
@@ -39,12 +45,17 @@ function autoDetectStack(targetDir) {
         testRunner: adapter.testRunner,
         gitHooks: fs.existsSync(path.join(targetDir, '.husky')) ? 'husky' : 'githooks',
         orm: 'Framework Native',
-        adapter
+        adapter,
+        techTools
       };
     }
   }
 
   // 2. Fallback detection
+  const techDetector = new TechnologyDetector();
+  const detectedTechs = techDetector.detect(targetDir);
+  const techTools = techDetector.getToolsForTech(detectedTechs);
+
   const config = {
     projectType: 'unknown',
     framework: 'unknown',
@@ -53,7 +64,8 @@ function autoDetectStack(targetDir) {
     testRunner: 'unknown',
     gitHooks: fs.existsSync(path.join(targetDir, '.husky')) ? 'husky' : 'githooks',
     orm: 'none',
-    adapter: null
+    adapter: null,
+    techTools
   };
 
   if (fs.existsSync(path.join(targetDir, 'src', 'app')) || fs.existsSync(path.join(targetDir, 'src', 'pages'))) {

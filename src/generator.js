@@ -213,8 +213,24 @@ ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
 
   // Step 2: Install tools (manifest-driven or fallback)
   if (config.adapter) {
-    const manifest = config.adapter.getTools();
-    installToolsFromManifest(targetDir, manifest, config);
+    const frameworkTools = config.adapter.getTools();
+    const techTools = config.techTools || [];
+
+    // Merge order: [frameworkTools prefix, ...techTools, check_custom + suffix]
+    // Split around check_custom to insert tech tools before it
+    const checkCustomIdx = frameworkTools.findIndex(t => t.name === 'check_custom');
+    const mergedManifest = checkCustomIdx >= 0
+      ? [
+          ...frameworkTools.slice(0, checkCustomIdx),
+          ...techTools,
+          ...frameworkTools.slice(checkCustomIdx)
+        ]
+      : [
+          ...frameworkTools,
+          ...techTools
+        ];
+
+    installToolsFromManifest(targetDir, mergedManifest, config);
   } else {
     installFallbackTools(targetDir);
   }
