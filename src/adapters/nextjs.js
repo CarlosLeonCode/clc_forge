@@ -46,7 +46,7 @@ class NextjsAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'scan_secrets',       language: 'js',       path: 'scan_secrets.js',       command: 'node tools/scan_secrets.js',       description: 'Scans for leaked secrets and API keys' },
       { name: 'check_a11y',         language: 'js',       path: 'check_a11y.js',         command: 'node tools/check_a11y.js',         description: 'Validates ARIA and accessibility rules' },
       { name: 'check_ui_reuse',     language: 'js',       path: 'check_ui_reuse.js',     command: 'node tools/check_ui_reuse.js',     description: 'Enforces UI primitive reuse from components/ui/' },
@@ -56,6 +56,7 @@ class NextjsAdapter extends BaseAdapter {
       { name: 'tsc',                language: 'external', path: '', command: 'npx tsc --noEmit',        description: 'TypeScript type checking', extCLI: 'tsc' },
       { name: 'lint',               language: 'external', path: '', command: 'npx lint-staged',         description: 'Lint staged files', extCLI: 'lint-staged' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

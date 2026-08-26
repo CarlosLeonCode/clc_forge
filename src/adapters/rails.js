@@ -36,12 +36,13 @@ class RailsAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'check_custom', language: 'js',       path: 'check_custom.js', command: 'node tools/check_custom.js', description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'rubocop',  language: 'external', path: '', command: 'bundle exec rubocop --parallel', description: 'Ruby linter', extCLI: 'rubocop' },
       { name: 'brakeman', language: 'external', path: '', command: 'bundle exec brakeman -q',        description: 'Rails vulnerability scanner', extCLI: 'brakeman' },
       { name: 'rspec',    language: 'external', path: '', command: 'bundle exec rspec',               description: 'Test runner', extCLI: 'rspec' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

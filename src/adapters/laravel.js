@@ -35,11 +35,12 @@ class LaravelAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'check_custom', language: 'python',   path: 'check_custom.py', command: 'python3 tools/check_custom.py', description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'phpstan',  language: 'external', path: '', command: './vendor/bin/phpstan analyse', description: 'PHP static analysis', extCLI: 'phpstan' },
       { name: 'artisan',  language: 'external', path: '', command: 'php artisan test',            description: 'Laravel test runner', extCLI: 'artisan' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

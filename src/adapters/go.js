@@ -33,11 +33,12 @@ class GoAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'check_custom',   language: 'js',       path: 'check_custom.js', command: 'node tools/check_custom.js', description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'golangci-lint', language: 'external', path: '', command: 'golangci-lint run',  description: 'Go linter and static analysis', extCLI: 'golangci-lint' },
       { name: 'go_test',       language: 'external', path: '', command: 'go test ./...',       description: 'Go test runner', extCLI: 'go' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

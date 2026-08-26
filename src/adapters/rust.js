@@ -33,12 +33,13 @@ class RustAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'check_custom',  language: 'js',       path: 'check_custom.js', command: 'node tools/check_custom.js', description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'cargo_clippy',  language: 'external', path: '', command: 'cargo clippy -- -D warnings', description: 'Rust linter and static analysis', extCLI: 'clippy' },
       { name: 'cargo_audit',   language: 'external', path: '', command: 'cargo audit',                description: 'Security vulnerability scanner', extCLI: 'cargo-audit' },
       { name: 'cargo_test',    language: 'external', path: '', command: 'cargo test',                  description: 'Rust test runner', extCLI: 'cargo' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

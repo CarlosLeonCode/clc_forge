@@ -48,13 +48,14 @@ class DjangoAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
       { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Django layer boundaries' },
       { name: 'check_custom',        language: 'python',   path: 'check_custom.py',       command: 'python3 tools/check_custom.py',     description: 'Runs user-defined custom rules from .clc-forge.yml' },
       { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
       { name: 'manage',             language: 'external', path: '', command: 'python3 manage.py test',  description: 'Django test runner', extCLI: 'manage.py' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {

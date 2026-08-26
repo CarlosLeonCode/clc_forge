@@ -47,7 +47,7 @@ class FastApiAdapter extends BaseAdapter {
    * @returns {Array<{name: string, language: string, path: string, command: string, description: string, extCLI?: string}>}
    */
   getTools() {
-    return [
+    const baseTools = [
       { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
       { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Clean Architecture layer boundaries' },
       { name: 'check_migrations',   language: 'py',       path: 'check_migrations.py',   command: 'python3 tools/check_migrations.py',   description: 'Checks Alembic migration idempotency' },
@@ -55,6 +55,7 @@ class FastApiAdapter extends BaseAdapter {
       { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
       { name: 'pytest',             language: 'external', path: '', command: 'pytest',                   description: 'Test runner', extCLI: 'pytest' },
     ];
+    return this._mergeTechTools(baseTools);
   }
 
   provision(targetDir, config) {
