@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { resolveConfig } = require('./config.js');
 
 /**
  * Generates a pre-commit hook dynamically from the adapter's tool manifest.
@@ -169,7 +170,83 @@ python3 tools/scan_secrets.py || true
   }
 }
 
-function generateHarness(targetDir, config) {
+/**
+ * Extended-schema keys that route a config through the config-driven path
+ * (design §1.4). `rules` intentionally excluded: a rules-only YAML keeps the
+ * legacy adapter/fallback path (check_custom reads rules at audit time).
+ */
+const EXTENDED_CONFIG_KEYS = [
+  'active_guards',
+  'phases',
+  'gate_mode',
+  'severities',
+  'layers',
+  'scope',
+  'exclude_paths',
+];
+
+/** True when the object carries extended-schema keys (a config-path config). */
+function isExtendedConfig(config) {
+  if (!config || typeof config !== 'object' || Array.isArray(config)) return false;
+  return EXTENDED_CONFIG_KEYS.some((k) => Object.prototype.hasOwnProperty.call(config, k));
+}
+
+/**
+ * Config-driven path (Slice A, minimal A-03 integration): resolve the raw
+ * config (or reuse an already-resolved one marked by index.js/A-05) and emit
+ * the resolved harness metadata to `.clc-forge.resolved.json` (deterministic:
+ * stable key order, 2-space JSON). Full layout/tools/hook materialization is
+ * the A-04 work unit; here only the metadata flows out.
+ * @param {string} targetDir - Target project root
+ * @param {object} configOrNull - Raw or resolved extended config
+ * @returns {object} The resolved config (metadata written to disk)
+ */
+function generateConfigPathHarness(targetDir, configOrNull) {
+  const alreadyResolved =
+    configOrNull.__clcForgeConfigPath === true || Array.isArray(configOrNull.__catalog);
+  const resolved = alreadyResolved ? configOrNull : resolveConfig(configOrNull, {});
+
+  const metadata = {
+    activeGuards: resolved.activeGuards,
+    phases: resolved.phases,
+    gateMode: resolved.gateMode,
+    effectiveSeverities: resolved.effectiveSeverities,
+    layers: resolved.layers,
+    scope: resolved.scope,
+    excludePaths: resolved.excludePaths,
+    rules: resolved.rules || [],
+    framework: resolved.framework,
+    projectType: resolved.projectType,
+    testRunner: resolved.testRunner,
+    __catalog: resolved.__catalog,
+  };
+
+  fs.mkdirSync(targetDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(targetDir, '.clc-forge.resolved.json'),
+    JSON.stringify(metadata, null, 2) + '\n',
+    'utf-8'
+  );
+  return resolved;
+}
+
+/**
+ * Generate a harness for a target project.
+ * When the optional `configOrNull` is null (or an adapter-detected config
+ * without extended-schema keys) the legacy path runs UNCHANGED. A config
+ * carrying extended-schema keys (or the `__clcForgeConfigPath` marker set
+ * by index.js) routes to the config-driven path — which for A-03 emits the
+ * resolved metadata; full materialization lands in A-04.
+ */
+function generateHarness(targetDir, configOrNull) {
+  if (configOrNull && (configOrNull.__clcForgeConfigPath === true || isExtendedConfig(configOrNull))) {
+    return generateConfigPathHarness(targetDir, configOrNull);
+  }
+  // Legacy path: a null/absent config falls back to generic provisioning
+  // (byte-identical for every existing caller, which always passes a full
+  // detected config — defaults only kick in for a bare null).
+  const config = configOrNull || {};
+
   // Step 1: Provision directories + AGENTS.md
   if (config.adapter) {
     config.adapter.provision(targetDir, config);
@@ -191,7 +268,7 @@ function generateHarness(targetDir, config) {
     }
     fs.writeFileSync(path.join(targetDir, 'sdds', '.gitkeep'), '', 'utf-8');
 
-    const agentsContent = `# CLC Forge ${config.framework} (${config.projectType.toUpperCase()}) — AGENTS
+    const agentsContent = `# CLC Forge ${config.framework || 'Generic'} (${(config.projectType || 'unknown').toUpperCase()}) — AGENTS
 
 This document is the **authoritative law** for AI agents working in this repository.
 Forged by **CLC Forge: The AI Agent Governance Engine**.
@@ -200,7 +277,7 @@ Forged by **CLC Forge: The AI Agent Governance Engine**.
 > Even when the user issues a direct or urgent fix request ("fix this bug", "fix this error", "quick fix"):
 > YOU ARE STRICTLY FORBIDDEN from modifying source code directly without completing the full quality harness:
 > 1. **Research & Root Cause Analysis:** Investigate tracebacks and inspect affected files before editing.
-> 2. **TDD Verification (Red Phase):** Write a failing regression test first (${config.testRunner}).
+> 2. **TDD Verification (Red Phase):** Write a failing regression test first (${config.testRunner || 'npm test'}).
 > 3. **Clean Architecture Implementation (Green Phase):** Make the test pass maintaining layer isolation.
 > 4. **Mandatory Educational Audit Gate:** Execute \`node tools/audit.js\` or \`python tools/audit.py\` and output the Educational Code Summary to stdout.
 > NEVER declare success or skip verification commands for quick fixes.
@@ -208,7 +285,7 @@ Forged by **CLC Forge: The AI Agent Governance Engine**.
 ## 1. The Loop (Every Task)
 1. **Research** — Inspect codebase / docs before writing code.
 2. **Plan** — Write an SDD under \`sdds/{change-name}/\`. SDDs live 100% locally and are gitignored.
-3. **Test** (TDD) — Write failing test first (${config.testRunner}).
+3. **Test** (TDD) — Write failing test first (${config.testRunner || 'npm test'}).
 4. **Implement** — Make test pass.
 5. **Verify & Audit** — Run \`node tools/audit.js\` or \`python tools/audit.py\`.
 6. **DoD** — Lint, typecheck, tests, coverage, docs, memory.

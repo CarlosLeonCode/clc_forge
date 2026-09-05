@@ -85,7 +85,17 @@ function parseYaml(text) {
       } else if (entry._parentObj && entry._parentKey) {
         // "- scalar" inside a sequence
         const pk = entry._parentObj[entry._parentKey];
-        if (Array.isArray(pk)) pk.push(parseScalar(rest));
+        if (Array.isArray(pk)) {
+          pk.push(parseScalar(rest));
+        } else if (pk && typeof pk === 'object' && Object.keys(pk).length === 0) {
+          // Convert empty object to array (same rule as the mapping-in-sequence
+          // branch above) so plain block sequences like
+          //   active_guards:
+          //     - check_custom
+          // parse into arrays, not empty objects. Additive: previously valid
+          // YAML parses identically.
+          entry._parentObj[entry._parentKey] = [parseScalar(rest)];
+        }
       }
       continue;
     }
