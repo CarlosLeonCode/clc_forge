@@ -91,6 +91,26 @@ function installToolsFromManifest(targetDir, manifest, config) {
       console.warn(`Warning: tool "${tool.path}" declared by adapter but not found in bundled tools/. Skipping.`);
     }
   });
+
+  // check_custom.js requires the shared YAML parser (../src/yaml.js),
+  // so the generated project must ship it too.
+  if (validTools.some(tool => tool.path === 'check_custom.js')) {
+    installYamlModule(targetDir, sourceToolsDir);
+  }
+}
+
+/**
+ * Copies the zero-dependency YAML parser into a generated project's src/.
+ * Required by tools/check_custom.js (require('../src/yaml.js')).
+ * @param {string} targetDir - Target project root
+ * @param {string} sourceToolsDir - Bundled tools/ directory of this package
+ */
+function installYamlModule(targetDir, sourceToolsDir) {
+  const yamlSrc = path.join(sourceToolsDir, '..', 'src', 'yaml.js');
+  if (!fs.existsSync(yamlSrc)) return;
+  const yamlDest = path.join(targetDir, 'src', 'yaml.js');
+  fs.mkdirSync(path.join(targetDir, 'src'), { recursive: true });
+  fs.copyFileSync(yamlSrc, yamlDest);
 }
 
 /**
@@ -110,6 +130,10 @@ function installFallbackTools(targetDir) {
       try { fs.chmodSync(destFile, '755'); } catch (e) {}
     }
   });
+
+  if (fallbackFiles.includes('check_custom.js')) {
+    installYamlModule(targetDir, sourceToolsDir);
+  }
 }
 
 /**
