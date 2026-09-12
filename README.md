@@ -1,7 +1,12 @@
+<img width="1254" height="1254" alt="clc_forge_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+
 # 🤖 CLC Forge (`clc-forge`)
 
 [![npm version](https://img.shields.io/npm/v/clc-forge.svg)](https://www.npmjs.com/package/clc-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<img width="1536" height="1024" alt="clc_forge_comparison" src="https://github.com/user-attachments/assets/2602679a-0927-4712-9ac9-793ec0c566e7" />
+
 
 > **The Universal Polyglot AI Agent Governance Engine & AIUP Orchestrator.**
 > Built by [Carlos Leon Code](https://github.com/carlosleoncode).
