@@ -342,6 +342,109 @@ ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
   } else {
     generateFallbackHook(targetDir, config.projectType);
   }
+
+  // Step 4: Install LLM Conversational CLI & Agent Context
+  installAgenticCLI(targetDir);
+}
+
+/**
+ * Instala la CLI Conversacional (SKILL.md) y genera los symlinks universales
+ * para que todos los LLMs (Cursor, Claude, Gemini) absorban el AGENTS.md.
+ */
+function installAgenticCLI(targetDir) {
+  // 1. Crear el Directorio de Skills
+  const skillDir = path.join(targetDir, '.agents', 'skills', 'clc_forge_cli');
+  fs.mkdirSync(skillDir, { recursive: true });
+
+  // 2. Inyectar el SKILL.md Maestro
+  const skillContent = `---
+name: clc_forge_cli
+description: Conversational CLI Orchestrator for the CLC Forge AI Agent Governance Engine.
+triggers:
+  - clc_forge start
+  - clc_forge create_guard
+  - clc_forge remove_guard
+  - clc_forge add_phase
+  - clc_forge remove_phase
+---
+
+# 🤖 CLC Forge — Conversational CLI
+
+You are the internal runtime engine of CLC Forge (AIUP Orchestrator). 
+DO NOT suggest terminal bash commands for these triggers; YOU are the execution environment. Your job is to guide the user through the agent governance lifecycle via chat, dynamically discovering the environment, and manipulating configuration files.
+
+## 🚀 INTENT: \`clc_forge start\`
+Execute this exact sequence without skipping steps:
+
+### Phase 1: Silent Discovery
+Scan the current project using your file-reading capabilities. Identify the primary tech stack by looking for signature files (e.g., \`package.json\`, \`Gemfile\`, \`Cargo.toml\`, \`go.mod\`). 
+*Golden Rule: Do not assume the language. Read the files to establish context.*
+
+### Phase 2: Interview & Proposal
+Introduce yourself as CLC Forge and state the detected stack.
+Propose a standard governance plan for that ecosystem (SDD + TDD + stack-specific Safeguards).
+ASK the user directly: 
+1. "Should we activate these standard phases, or do you want to define custom ones?"
+2. "Do you have any specific security needs that require a custom Guard?"
+**STOP.** Wait for the user's response.
+
+### Phase 3: Materialization
+Based on user approval, generate and write the \`.clc-forge.yaml\` file in the project root.
+
+---
+
+## 🛠️ INTENT: \`clc_forge create_guard\`
+1. Ask the user what behavior they want to audit or block. **STOP.** Wait for technical details.
+2. Based on the detected stack, write the linter/guard script in the **NATIVE ECOSYSTEM LANGUAGE** (Ruby for Rails, Go \`ast\` for Golang, Python \`ast\` for FastAPI, JS for Node). Save it in \`tools/guards/\`.
+3. Update the \`.clc-forge.yaml\` file to include the new Guard.
+
+---
+
+## 🗑️ INTENT: \`clc_forge remove_guard\`
+1. Ask which guard to remove and if the script should be deleted. **STOP.** Wait for response.
+2. Update \`.clc-forge.yaml\` and delete the script from \`tools/guards/\` if requested.
+
+---
+
+## 🔄 INTENT: \`clc_forge add_phase` / \`clc_forge remove_phase\`
+1. Ask for details of the lifecycle phase to add or remove. **STOP.** Wait for response.
+2. Update the \`execution_phases\` block in \`.clc-forge.yaml\`, preserving the logical sequence.
+`;
+  
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent, 'utf-8');
+
+  // 3. Crear Symlinks Dinámicos al AGENTS.md (El Single Source of Truth)
+  const sourceFile = 'AGENTS.md';
+  const symlinks = [
+    'CLAUDE.md',                               // Cursor / Claude Desktop / Windsurf
+    'GEMINI.md',                               // Gemini / Project IDX
+    '.cursorrules',                            // Cursor legacy
+    '.cursor/rules/clc_forge_context.mdc',     // Cursor modern (MDC)
+    '.github/copilot-instructions.md',         // GitHub Copilot
+    '.antigravity/rules.md'                    // Antigravity (Local Agent)
+  ];
+
+  symlinks.forEach(link => {
+    const linkPath = path.join(targetDir, link);
+    const linkDir = path.dirname(linkPath);
+    
+    if (!fs.existsSync(linkDir)) {
+      fs.mkdirSync(linkDir, { recursive: true });
+    }
+
+    const relPath = path.relative(linkDir, path.join(targetDir, sourceFile));
+    
+    try {
+      try {
+        if (fs.lstatSync(linkPath)) {
+          fs.unlinkSync(linkPath);
+        }
+      } catch (err) {}
+      fs.symlinkSync(relPath, linkPath, 'file');
+    } catch (e) {
+      // Ignorar fallos de permisos o symlinks existentes
+    }
+  });
 }
 
 module.exports = { generateHarness, generateHookFromManifest };
