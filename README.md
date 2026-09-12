@@ -1,15 +1,15 @@
-<img width="1254" height="1254" alt="clc_forge_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+<div align="center">
+  <img width="120" alt="clc_forge_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+</div>
 
 # 🤖 CLC Forge (`clc-forge`)
 
 [![npm version](https://img.shields.io/npm/v/clc-forge.svg)](https://www.npmjs.com/package/clc-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<img width="1536" height="1024" alt="clc_forge_comparison" src="https://github.com/user-attachments/assets/2602679a-0927-4712-9ac9-793ec0c566e7" />
-
 
 > **The Universal Polyglot AI Agent Governance Engine & AIUP Orchestrator.**
-> Built by [Carlos Leon Code](https://github.com/carlosleoncode).
+> Built by [CarlosLeonCode](https://github.com/carlosleoncode).
 
 AI coding agents (Claude, Cursor, Gemini) generate code extraordinarily fast, but without strict boundaries, they introduce technical debt, hallucinated tests, and architecture violations. **CLC Forge** is the definitive harness to tame them. 
 
@@ -34,6 +34,11 @@ Left to their own devices, AI agents suffer from "immediacy bias"—rushing to w
 - ❌ **Security Leaks:** Accidentally committing API keys or exposing private backend DTOs to the client.
 
 CLC Forge solves this by shifting the LLM from a "code autocomplete tool" into a disciplined **Software Engineer** bound by deterministic AST linters and mandatory planning gates.
+
+<div align="center">
+  <img width="900" alt="clc_forge_comparison" src="https://github.com/user-attachments/assets/2602679a-0927-4712-9ac9-793ec0c566e7" />
+  <p><em>Left: AI agent without governance — chaotic, hallucinated code. Right: AI agent with CLC Forge AIUP — structured, safe, architectural.</em></p>
+</div>
 
 ---
 
