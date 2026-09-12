@@ -6,6 +6,7 @@
 
 [![npm version](https://img.shields.io/npm/v/clc-forge.svg)](https://www.npmjs.com/package/clc-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Español](https://img.shields.io/badge/README-Español-blue.svg)](./README.es.md)
 
 
 > **The Universal Polyglot AI Agent Governance Engine & AIUP Orchestrator.**
