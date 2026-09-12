@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="120" alt="clc_forge_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+  <img width="350" alt="clc_forge_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
 </div>
 
 # 🤖 CLC Forge (`clc-forge`)
