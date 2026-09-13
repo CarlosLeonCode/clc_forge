@@ -88,21 +88,47 @@ CLC Forge is 100% framework-agnostic. It features dedicated adapters that auto-d
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Step-by-Step Guide (Full Lifecycle)
 
-### 1. Bootstrap the Harness (Terminal)
-Navigate to any repository and run:
-```bash
-npx clc-forge init
 ```
-*This generates the core `AGENTS.md`, the AIUP Skill, and IDE symlinks.*
+[1. Terminal]           [2. AI Chat]                 [3. TDD Loop]                 [4. Git Commit]
+npx clc-forge   ───►   clc_forge start   ───►   "Feature X with harness"   ───►   Pre-commit Hooks
+(Bootstrap)            (Interactive Setup)          (SDD -> HIT -> Tests)         (AST & Secret Guard)
+```
 
-### 2. Enter the Conversational CLI (LLM Chat)
-Open your favorite AI IDE (Cursor, Claude, Gemini) and prompt:
-> "clc_forge start"
+### 1️⃣ Step 1: Bootstrap the Repository (Terminal)
+Navigate to your project root and run:
+```bash
+npx clc-forge
+```
+- **What happens:** Auto-detects your stack (e.g., FastAPI, Next.js, Rails), generates `AGENTS.md`, provisions `.githooks/` or `.husky/`, creates deterministic AST tools in `tools/`, and links IDE rules (`.cursorrules`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.antigravity/rules.md`).
 
-### 3. Audit Repository Health (Terminal)
-To verify if a repository complies with the CLC Forge Quality Standard:
+### 2️⃣ Step 2: Open Your AI IDE & Initialize (Conversational CLI)
+Open the project in Cursor, Claude Code, Gemini CLI, Windsurf, or Copilot. In the chat, prompt:
+> `clc_forge start`
+- **What happens:** The agent scans your codebase silently, proposes an AIUP governance plan tailored to your framework, and generates your custom `.clc-forge.yaml` specification after your confirmation.
+
+### 3️⃣ Step 3: Daily Development with the Harness
+When requesting features, bug fixes, or refactors, always invoke the harness trigger:
+> *"Add user authentication endpoint. **Use the workflow / harness**."*
+- **What happens:** The agent automatically runs the 10-step AIUP cycle:
+  1. **SDD & Research:** Writes the specification under `sdds/{feature}/`.
+  2. **HIT Gate (Human-in-the-Loop):** Presents test scenarios for your review before touching code.
+  3. **TDD (Red Phase):** Writes failing regression tests first.
+  4. **Implementation (Green Phase):** Writes layered, clean code until tests pass.
+  5. **Audit:** Executes `tools/audit` to guarantee zero layer leaks or secret exposures.
+
+### 4️⃣ Step 4: Deterministic Guard Verification (Commit)
+Stage and commit your changes:
+```bash
+git add .
+git commit -m "feat(auth): add user authentication endpoint"
+```
+- **What happens:** Pre-commit hooks run automated AST scanners (Clean Architecture, Secret Leak, Scope Guard, Migration Idempotency). Any violation blocks the commit deterministically.
+
+### 5️⃣ Step 5: Verify Repository Health Anytime (Terminal)
+To verify if a repository complies with the CLC Forge Quality Standard at any moment:
 ```bash
 npx clc-forge doctor
 ```
+

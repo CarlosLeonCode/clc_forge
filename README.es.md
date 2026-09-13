@@ -87,21 +87,47 @@ CLC Forge es 100% agnóstico al framework. Cuenta con adaptadores dedicados que 
 
 ---
 
-## ⚡ Inicio Rápido
+## ⚡ Guía Paso a Paso (Ciclo de Vida Completo)
 
-### 1. Inicializar el Arnés (Terminal)
-Navegá a cualquier repositorio y ejecutá:
-```bash
-npx clc-forge init
 ```
-*Esto genera el `AGENTS.md` central, el Skill AIUP, y los symlinks para todos los IDEs.*
+[1. Terminal]           [2. Chat del LLM]            [3. Bucle TDD]                [4. Git Commit]
+npx clc-forge   ───►   clc_forge start   ───►   "Feature X con harness"   ───►   Hooks Pre-commit
+(Bootstrap)            (Setup Interactivo)          (SDD -> HIT -> Tests)         (Guardián AST & Secretos)
+```
 
-### 2. Activar la CLI Conversacional (Chat del LLM)
-Abrí tu IDE con IA favorito (Cursor, Claude, Gemini) y escribí:
-> "clc_forge start"
+### 1️⃣ Paso 1: Inicializar el Repositorio (Terminal)
+Navegá a la raíz de tu proyecto y ejecutá:
+```bash
+npx clc-forge
+```
+- **Qué sucede:** Detecta automáticamente tu stack (FastAPI, Next.js, Rails, etc.), genera el `AGENTS.md`, provisiona `.githooks/` o `.husky/`, crea los linters de AST en `tools/` y enlaza las reglas para todos los IDEs (`.cursorrules`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.antigravity/rules.md`).
 
-### 3. Auditar la Salud del Repositorio (Terminal)
-Para verificar que un repositorio cumple con el estándar CLC Forge:
+### 2️⃣ Paso 2: Abrir tu IDE con IA & Activar (CLI Conversacional)
+Abrí el proyecto en Cursor, Claude Code, Gemini CLI, Windsurf o Copilot. En el chat del agente, escribí:
+> `clc_forge start`
+- **Qué sucede:** El agente escanea tu código en silencio, propone un plan de gobernanza AIUP adaptado a tu stack y genera tu archivo `.clc-forge.yaml` tras tu confirmación.
+
+### 3️⃣ Paso 3: Desarrollo Diario con el Arnés
+Cuando pidas una funcionalidad, fix o refactor, invocá siempre el disparador del arnés:
+> *"Creá el endpoint de autenticación de usuarios. **Usá el workflow / harness**."*
+- **Qué sucede:** El agente ejecuta de forma autónoma el ciclo de 10 pasos:
+  1. **SDD & Research:** Escribe la especificación técnica en `sdds/{feature}/`.
+  2. **HIT Gate (Human-in-the-Loop):** Presenta los escenarios de prueba para tu validación antes de tocar código.
+  3. **TDD (Fase Roja):** Escribe los tests que fallan primero.
+  4. **Implementación (Fase Verde):** Escribe código limpio en capas hasta que los tests pasen.
+  5. **Auditoría:** Ejecuta `tools/audit` asegurando cero fugas de capas o secretos.
+
+### 4️⃣ Paso 4: Verificación Determinística en Commit
+Agregá tus cambios y hacé el commit:
+```bash
+git add .
+git commit -m "feat(auth): add user authentication endpoint"
+```
+- **Qué sucede:** Los hooks de pre-commit ejecutan los scanners de AST (Arquitectura Limpia, Escaneo de Secretos, Scope Guard, Idempotencia de Migraciones). Cualquier violación bloquea el commit de inmediato.
+
+### 5️⃣ Paso 5: Auditar la Salud del Repositorio en Cualquier Momento (Terminal)
+Para verificar que el repositorio cumple con el estándar de calidad CLC Forge:
 ```bash
 npx clc-forge doctor
 ```
+
