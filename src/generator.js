@@ -406,7 +406,7 @@ Based on user approval, generate and write the \`.clc-forge.yaml\` file in the p
 
 ---
 
-## 🔄 INTENT: \`clc_forge add_phase` / \`clc_forge remove_phase\`
+## 🔄 INTENT: \`clc_forge add_phase\` / \`clc_forge remove_phase\`
 1. Ask for details of the lifecycle phase to add or remove. **STOP.** Wait for response.
 2. Update the \`execution_phases\` block in \`.clc-forge.yaml\`, preserving the logical sequence.
 `;
