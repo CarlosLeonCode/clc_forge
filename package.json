@@ -3,6 +3,13 @@
   "version": "1.2.6",
   "description": "CLC Kernel — The Universal Polyglot AI Agent Governance Engine (Next.js, FastAPI, Django, Astro, Rails, Go, Rust, Laravel).",
   "main": "./bin/cli.js",
+  "files": [
+    "bin",
+    "src",
+    "tools",
+    "README.md",
+    "README.es.md"
+  ],
   "bin": {
     "clckernel": "bin/cli.js",
     "create-clckernel": "bin/cli.js",
