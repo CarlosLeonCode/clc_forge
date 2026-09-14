@@ -1,6 +1,6 @@
 /**
- * CLC Forge — Django Stack Adapter
- * Supports Django, pytest-django / manage.py test, Django ORM migration idempotency, and Flake8/Black linters.
+ * CLC Kernel — Django Stack Adapter
+ * Supports Django apps, pytest-django, Ruff AST, ORM idempotency, and Scope Guard.
  */
 
 const fs = require('fs');

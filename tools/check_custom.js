@@ -16,11 +16,12 @@ const check = async function checkCustom(targetDir) {
   const dir = targetDir || process.cwd();
 
   // ── 1. Load config ──────────────────────────────────────────────────
-  const configPath = path.join(dir, '.clc-forge.yml');
-  if (!fs.existsSync(configPath)) {
+  const candidates = ['.clckernel.yml', '.clckernel.yaml', '.clc-forge.yml', '.clc-forge.yaml'];
+  const configPath = candidates.map(c => path.join(dir, c)).find(p => fs.existsSync(p));
+  if (!configPath) {
     return {
       exitCode: 0, skipped: true, name: 'check_custom',
-      data: { violations: {}, message: 'No .clc-forge.yml found' },
+      data: { violations: {}, message: 'No .clckernel.yml or .clc-forge.yml found' },
     };
   }
 

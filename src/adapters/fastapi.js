@@ -1,6 +1,6 @@
 /**
- * CLC Forge — FastAPI Stack Adapter
- * Supports FastAPI, Pytest, Alembic migration idempotency, Pydantic V2 schemas, and Clean Architecture AST linters.
+ * CLC Kernel — FastAPI Stack Adapter
+ * Supports FastAPI apps, pytest, Pydantic V2, Alembic idempotency, and AST Clean Architecture.
  */
 
 const fs = require('fs');

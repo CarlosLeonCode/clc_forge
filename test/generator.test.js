@@ -409,7 +409,7 @@ describe('generateHarness', () => {
 
         const content = fs.readFileSync(hookFile, 'utf-8');
         assert.ok(content.startsWith('#!/usr/bin/env bash'), 'should have bash shebang');
-        assert.ok(content.includes('CLC Forge'), 'should include CLC Forge branding');
+        assert.ok(content.includes('CLC Kernel') || content.includes('CLC Forge'), 'should include CLC branding');
         assert.ok(content.includes('scan_secrets'), 'should reference scan_secrets');
       } finally {
         teardown(dir);

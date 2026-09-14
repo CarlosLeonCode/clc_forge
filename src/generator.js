@@ -30,7 +30,7 @@ function generateHookFromManifest(adapter, targetDir) {
     lines.push('');
   } else {
     lines.push('#!/usr/bin/env bash');
-    lines.push(`echo "Running CLC Forge ${adapter.name} Safeguards..."`);
+    lines.push(`echo "Running CLC Kernel ${adapter.name} Safeguards..."`);
     lines.push('');
   }
 
@@ -160,7 +160,7 @@ node tools/scan_secrets.js || true
     fs.mkdirSync(hookDir, { recursive: true });
     const hookFile = path.join(hookDir, 'pre-commit');
     fs.writeFileSync(hookFile, `#!/usr/bin/env bash
-echo "Running CLC Forge Safeguards..."
+echo "Running CLC Kernel Safeguards..."
 python3 tools/scan_secrets.py || true
 `, 'utf-8');
     try { fs.chmodSync(hookFile, '755'); } catch (e) {}
@@ -194,16 +194,19 @@ function isExtendedConfig(config) {
 /**
  * Config-driven path (Slice A, minimal A-03 integration): resolve the raw
  * config (or reuse an already-resolved one marked by index.js/A-05) and emit
- * the resolved harness metadata to `.clc-forge.resolved.json` (deterministic:
- * stable key order, 2-space JSON). Full layout/tools/hook materialization is
- * the A-04 work unit; here only the metadata flows out.
+ * the resolved harness metadata to `.clckernel.resolved.json` and
+ * `.clc-forge.resolved.json` (deterministic: stable key order, 2-space JSON).
+ * Full layout/tools/hook materialization is the A-04 work unit; here only
+ * the metadata flows out.
  * @param {string} targetDir - Target project root
  * @param {object} configOrNull - Raw or resolved extended config
  * @returns {object} The resolved config (metadata written to disk)
  */
 function generateConfigPathHarness(targetDir, configOrNull) {
   const alreadyResolved =
-    configOrNull.__clcForgeConfigPath === true || Array.isArray(configOrNull.__catalog);
+    configOrNull.__clcKernelConfigPath === true ||
+    configOrNull.__clcForgeConfigPath === true ||
+    Array.isArray(configOrNull.__catalog);
   const resolved = alreadyResolved ? configOrNull : resolveConfig(configOrNull, {});
 
   const metadata = {
@@ -223,6 +226,11 @@ function generateConfigPathHarness(targetDir, configOrNull) {
 
   fs.mkdirSync(targetDir, { recursive: true });
   fs.writeFileSync(
+    path.join(targetDir, '.clckernel.resolved.json'),
+    JSON.stringify(metadata, null, 2) + '\n',
+    'utf-8'
+  );
+  fs.writeFileSync(
     path.join(targetDir, '.clc-forge.resolved.json'),
     JSON.stringify(metadata, null, 2) + '\n',
     'utf-8'
@@ -234,12 +242,12 @@ function generateConfigPathHarness(targetDir, configOrNull) {
  * Generate a harness for a target project.
  * When the optional `configOrNull` is null (or an adapter-detected config
  * without extended-schema keys) the legacy path runs UNCHANGED. A config
- * carrying extended-schema keys (or the `__clcForgeConfigPath` marker set
+ * carrying extended-schema keys (or the `__clcKernelConfigPath` marker set
  * by index.js) routes to the config-driven path — which for A-03 emits the
  * resolved metadata; full materialization lands in A-04.
  */
 function generateHarness(targetDir, configOrNull) {
-  if (configOrNull && (configOrNull.__clcForgeConfigPath === true || isExtendedConfig(configOrNull))) {
+  if (configOrNull && (configOrNull.__clcKernelConfigPath === true || configOrNull.__clcForgeConfigPath === true || isExtendedConfig(configOrNull))) {
     return generateConfigPathHarness(targetDir, configOrNull);
   }
   // Legacy path: a null/absent config falls back to generic provisioning
@@ -268,10 +276,10 @@ function generateHarness(targetDir, configOrNull) {
     }
     fs.writeFileSync(path.join(targetDir, 'sdds', '.gitkeep'), '', 'utf-8');
 
-    const agentsContent = `# CLC Forge ${config.framework || 'Generic'} (${(config.projectType || 'unknown').toUpperCase()}) — AGENTS
+    const agentsContent = `# CLC Kernel ${config.framework || 'Generic'} (${(config.projectType || 'unknown').toUpperCase()}) — AGENTS
 
 This document is the **authoritative law** for AI agents working in this repository.
-Forged by **CLC Forge: The AI Agent Governance Engine**.
+Forged by **CLC Kernel: The AI Agent Governance Engine**.
 
 > **RULE #0: MANDATORY EXECUTION OVERRIDE RULE (UNBYPASSABLE)**
 > Even when the user issues a direct or urgent fix request ("fix this bug", "fix this error", "quick fix"):
@@ -353,27 +361,31 @@ ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
  */
 function installAgenticCLI(targetDir) {
   // 1. Crear el Directorio de Skills
-  const skillDir = path.join(targetDir, '.agents', 'skills', 'clc_forge_cli');
+  const skillDir = path.join(targetDir, '.agents', 'skills', 'clckernel_cli');
+  const legacySkillDir = path.join(targetDir, '.agents', 'skills', 'clc_forge_cli');
   fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(legacySkillDir, { recursive: true });
 
   // 2. Inyectar el SKILL.md Maestro
   const skillContent = `---
-name: clc_forge_cli
-description: Conversational CLI Orchestrator for the CLC Forge AI Agent Governance Engine.
+name: clckernel_cli
+description: Conversational CLI Orchestrator for the CLC Kernel AI Agent Governance Engine.
 triggers:
+  - clckernel start
+  - clckernel create_guard
+  - clckernel remove_guard
+  - clckernel add_phase
+  - clckernel remove_phase
   - clc_forge start
   - clc_forge create_guard
-  - clc_forge remove_guard
-  - clc_forge add_phase
-  - clc_forge remove_phase
 ---
 
-# 🤖 CLC Forge — Conversational CLI
+# 🤖 CLC Kernel — Conversational CLI
 
-You are the internal runtime engine of CLC Forge (AIUP Orchestrator). 
+You are the internal runtime engine of CLC Kernel (AIUP Orchestrator). 
 DO NOT suggest terminal bash commands for these triggers; YOU are the execution environment. Your job is to guide the user through the agent governance lifecycle via chat, dynamically discovering the environment, and manipulating configuration files.
 
-## 🚀 INTENT: \`clc_forge start\`
+## 🚀 INTENT: \`clckernel start\` (or \`clc_forge start\`)
 Execute this exact sequence without skipping steps:
 
 ### Phase 1: Silent Discovery
@@ -381,7 +393,7 @@ Scan the current project using your file-reading capabilities. Identify the prim
 *Golden Rule: Do not assume the language. Read the files to establish context.*
 
 ### Phase 2: Interview & Proposal
-Introduce yourself as CLC Forge and state the detected stack.
+Introduce yourself as CLC Kernel and state the detected stack.
 Propose a standard governance plan for that ecosystem (SDD + TDD + stack-specific Safeguards).
 ASK the user directly: 
 1. "Should we activate these standard phases, or do you want to define custom ones?"
@@ -389,29 +401,30 @@ ASK the user directly:
 **STOP.** Wait for the user's response.
 
 ### Phase 3: Materialization
-Based on user approval, generate and write the \`.clc-forge.yaml\` file in the project root.
+Based on user approval, generate and write the \`.clckernel.yaml\` file in the project root.
 
 ---
 
-## 🛠️ INTENT: \`clc_forge create_guard\`
+## 🛠️ INTENT: \`clckernel create_guard\`
 1. Ask the user what behavior they want to audit or block. **STOP.** Wait for technical details.
 2. Based on the detected stack, write the linter/guard script in the **NATIVE ECOSYSTEM LANGUAGE** (Ruby for Rails, Go \`ast\` for Golang, Python \`ast\` for FastAPI, JS for Node). Save it in \`tools/guards/\`.
-3. Update the \`.clc-forge.yaml\` file to include the new Guard.
+3. Update the \`.clckernel.yaml\` file to include the new Guard.
 
 ---
 
-## 🗑️ INTENT: \`clc_forge remove_guard\`
+## 🗑️ INTENT: \`clckernel remove_guard\`
 1. Ask which guard to remove and if the script should be deleted. **STOP.** Wait for response.
-2. Update \`.clc-forge.yaml\` and delete the script from \`tools/guards/\` if requested.
+2. Update \`.clckernel.yaml\` and delete the script from \`tools/guards/\` if requested.
 
 ---
 
-## 🔄 INTENT: \`clc_forge add_phase\` / \`clc_forge remove_phase\`
+## 🔄 INTENT: \`clckernel add_phase\` / \`clckernel remove_phase\`
 1. Ask for details of the lifecycle phase to add or remove. **STOP.** Wait for response.
-2. Update the \`execution_phases\` block in \`.clc-forge.yaml\`, preserving the logical sequence.
+2. Update the \`execution_phases\` block in \`.clckernel.yaml\`, preserving the logical sequence.
 `;
   
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent, 'utf-8');
+  fs.writeFileSync(path.join(legacySkillDir, 'SKILL.md'), skillContent, 'utf-8');
 
   // 3. Crear Symlinks Dinámicos al AGENTS.md (El Single Source of Truth)
   const sourceFile = 'AGENTS.md';
@@ -419,7 +432,8 @@ Based on user approval, generate and write the \`.clc-forge.yaml\` file in the p
     'CLAUDE.md',                               // Cursor / Claude Desktop / Windsurf
     'GEMINI.md',                               // Gemini / Project IDX
     '.cursorrules',                            // Cursor legacy
-    '.cursor/rules/clc_forge_context.mdc',     // Cursor modern (MDC)
+    '.cursor/rules/clckernel_context.mdc',     // Cursor modern (MDC)
+    '.cursor/rules/clc_forge_context.mdc',     // Cursor backward compat
     '.github/copilot-instructions.md',         // GitHub Copilot
     '.antigravity/rules.md'                    // Antigravity (Local Agent)
   ];

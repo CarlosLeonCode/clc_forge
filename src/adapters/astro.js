@@ -1,5 +1,5 @@
 /**
- * CLC Forge — Astro Stack Adapter
+ * CLC Kernel — Astro Stack Adapter
  * Supports Astro components, Tailwind CSS v4, Vitest, A11y, and Storybook/MDX stories.
  */
 

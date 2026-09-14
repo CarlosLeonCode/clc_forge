@@ -1,5 +1,5 @@
 /**
- * CLC Forge — Base Stack Adapter Interface
+ * CLC Kernel — Base Stack Adapter Interface
  * All framework-specific adapters (Rails, Astro, Next.js, FastAPI, Go, Rust, Laravel)
  * inherit from this interface to ensure universal polyglot harness behavior.
  */
@@ -75,10 +75,10 @@ class BaseAdapter {
 
     // 3. Write AGENTS.md
     const isFront = this.projectType === 'frontend';
-    const agentsContent = `# 🔨 CLC Forge ${this.name} (${this.projectType.toUpperCase()}) — AGENTS
+    const agentsContent = `# 🔨 CLC Kernel ${this.name} (${this.projectType.toUpperCase()}) — AGENTS
 
 This document is the **authoritative law** for AI agents working in this repository.
-Forged by **CLC Forge: The AI Agent Governance Engine**.
+Forged by **CLC Kernel: The AI Agent Governance Engine**.
 
 > 🚨 **RULE #0: MANDATORY EXECUTION OVERRIDE RULE (UNBYPASSABLE)**
 > Even when the user issues a direct or urgent fix request ("fix this bug", "fix this error", "quick fix"):

@@ -24,7 +24,7 @@ describe('Integration: Full CLI Flow', () => {
           timeout: 15000,
         });
         assert.ok(result.includes('HEALTHY'), 'doctor should report HEALTHY');
-        assert.ok(result.includes('CLC FORGE DOCTOR'), 'should show doctor header');
+        assert.ok(result.includes('CLC KERNEL DOCTOR') || result.includes('CLC FORGE DOCTOR'), 'should show doctor header');
         assert.ok(result.includes('[PASS]'), 'should show PASS checks');
       } finally {
         teardown(dir);
@@ -132,7 +132,7 @@ describe('Integration: Full CLI Flow', () => {
           timeout: 15000,
         });
         assert.ok(result.includes('HEALTHY'), '--doctor flag should run doctor');
-        assert.ok(result.includes('CLC FORGE DOCTOR'), 'should show doctor header');
+        assert.ok(result.includes('CLC KERNEL DOCTOR') || result.includes('CLC FORGE DOCTOR'), 'should show doctor header');
       } finally {
         teardown(dir);
       }

@@ -1,7 +1,7 @@
 /**
- * CLC Forge — Central Safeguard Catalog
+ * CLC Kernel — Central Safeguard Catalog
  *
- * Single source of truth describing every safeguard/guard the clc-forge
+ * Single source of truth describing every safeguard/guard the clckernel
  * framework knows about. Drives config validation (src/config.js),
  * config-driven harness generation (src/generator.js), doctor checks, and
  * the future safeguard audit.
@@ -54,6 +54,16 @@ const SAFEGUARD_CATALOG = [
     checks: 'next/image + tree-shaking', verify: ['verify_performance', 'verify_image_optimization'],
     applies_when: 'frontend', severity: 'warning', gate_mode: 'advisory', config_keys: ['scope', 'exclude_paths'],
     phase: 'audit', file: 'check_performance.js', manifest: true, planned: false },
+
+  { name: 'check_responsive', labels: ['check_responsive', 'check_responsive.js'],
+    checks: 'Mobile-first responsiveness, fixed-width overflow & touch target size', verify: ['verify_responsive', 'verify_mobile_adaptability'],
+    applies_when: 'frontend', severity: 'warning', gate_mode: 'advisory', config_keys: ['scope', 'exclude_paths'],
+    phase: 'audit', file: 'check_responsive.js', manifest: true, planned: false },
+
+  { name: 'check_seo', labels: ['check_seo', 'check_seo.js'],
+    checks: 'SEO metadata, OpenGraph, GEO tags, semantic HTML & LCP priority', verify: ['verify_seo', 'verify_geo_metadata', 'verify_core_web_vitals'],
+    applies_when: 'frontend', severity: 'warning', gate_mode: 'advisory', config_keys: ['scope', 'exclude_paths'],
+    phase: 'audit', file: 'check_seo.js', manifest: true, planned: false },
 
   { name: 'check_storybook', labels: ['check_storybook', 'check_storybook.js'],
     checks: 'Storybook coverage (`.stories.tsx`)', verify: ['verify_storybook_coverage'],
@@ -138,7 +148,7 @@ const SAFEGUARD_CATALOG = [
   { name: 'check_db_efficiency', labels: ['check_db_efficiency', 'check_db_efficiency.py'],
     checks: 'ORM N+1 / select_related / prefetch_related', verify: ['verify_db_efficiency', 'verify_no_n_plus_1'],
     applies_when: 'django|sqlalchemy', severity: 'error', gate_mode: 'hard', config_keys: ['scope', 'exclude_paths'],
-    phase: 'audit', file: 'check_db_efficiency.py', manifest: true, planned: true },
+    phase: 'audit', file: 'check_db_efficiency.py', manifest: true, planned: false },
 
   { name: 'check_observability', labels: ['check_observability', 'check_observability.py'],
     checks: 'structlog structured logging; bare print/logger ban', verify: ['verify_structured_logging'],

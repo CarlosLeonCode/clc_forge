@@ -1,6 +1,6 @@
 /**
- * CLC Forge — Ruby on Rails Stack Adapter
- * Supports Ruby on Rails, RSpec/Minitest, RuboCop, Brakeman, and Rails migration idempotency.
+ * CLC Kernel — Ruby on Rails Stack Adapter
+ * Supports Rails, RSpec, RuboCop AST, Brakeman Security, and migration idempotency.
  */
 
 const fs = require('fs');

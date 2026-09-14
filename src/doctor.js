@@ -1,5 +1,5 @@
 /**
- * CLC Forge — Health Doctor & Functional Validator
+ * CLC Kernel — Health Doctor & Functional Validator
  * Scans a target repository to verify safeguards, AGENTS.md, docs structure,
  * git hooks, tool functionality, and audit orchestrator alignment.
  */
@@ -10,7 +10,7 @@ const { execSync } = require('child_process');
 const { colors } = require('./ui');
 
 function runDoctor(targetDir) {
-  console.log(`\n${colors.bold}${colors.cyan}CLC FORGE DOCTOR — HEALTH CHECK${colors.reset}\n`);
+  console.log(`\n${colors.bold}${colors.cyan}CLC KERNEL DOCTOR — HEALTH CHECK${colors.reset}\n`);
   console.log(`  Target Repository: ${colors.cyan}${targetDir}${colors.reset}\n`);
 
   const checks = [];
@@ -116,9 +116,9 @@ function runDoctor(targetDir) {
 
   console.log('\n---------------------------------------------------------------');
   if (passedCount === checks.length) {
-    console.log(` ${colors.bgEmerald} HEALTHY ${colors.reset} ${colors.emerald}${colors.bold}Repository meets 100% of the CLC Forge standard.${colors.reset}\n`);
+    console.log(` ${colors.bgEmerald} HEALTHY ${colors.reset} ${colors.emerald}${colors.bold}Repository meets 100% of the CLC Kernel standard.${colors.reset}\n`);
   } else {
-    console.log(` ${colors.amber}  ${checks.length - passedCount} issue(s) detected. Run \`npx create-clc-forge\` to repair.${colors.reset}\n`);
+    console.log(` ${colors.amber}  ${checks.length - passedCount} issue(s) detected. Run \`npx clckernel\` to repair.${colors.reset}\n`);
   }
 }
 

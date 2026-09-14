@@ -1,13 +1,18 @@
 {
-  "name": "clc-forge",
+  "name": "clckernel",
   "version": "1.2.4",
-  "description": "CLC Forge — The Universal Polyglot AI Agent Governance Engine (Next.js, FastAPI, Django, Astro, Rails, Go, Rust, Laravel).",
+  "description": "CLC Kernel — The Universal Polyglot AI Agent Governance Engine (Next.js, FastAPI, Django, Astro, Rails, Go, Rust, Laravel).",
   "main": "./bin/cli.js",
   "bin": {
+    "clckernel": "bin/cli.js",
+    "create-clckernel": "bin/cli.js",
+    "clc-kernel": "bin/cli.js",
     "clc-forge": "bin/cli.js",
     "create-clc-forge": "bin/cli.js"
   },
   "keywords": [
+    "clckernel",
+    "clc-kernel",
     "clc-forge",
     "clc_forge",
     "carlosleoncode",

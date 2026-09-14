@@ -225,16 +225,17 @@ def check(target_dir: Optional[str] = None) -> dict:
     Reads .clc-forge.yml and executes user-defined regex rules.
     Returns: {exit_code, skipped, name, data: {violations, message}}
     """
-    dir_path = target_dir or os.getcwd()
-    config_path = pathlib.Path(dir_path) / '.clc-forge.yml'
+    dir_path = pathlib.Path(target_dir or os.getcwd())
+    candidates = ['.clckernel.yml', '.clckernel.yaml', '.clc-forge.yml', '.clc-forge.yaml']
+    config_path = next((dir_path / c for c in candidates if (dir_path / c).exists()), None)
 
     # ── 1. Load config ──────────────────────────────────────────────
-    if not config_path.exists():
+    if not config_path:
         return {
             "exit_code": 0,
             "skipped": True,
             "name": "check_custom",
-            "data": {"violations": {}, "message": "No .clc-forge.yml found"},
+            "data": {"violations": {}, "message": "No .clckernel.yml or .clc-forge.yml found"},
         }
 
     try:

@@ -1,6 +1,6 @@
 /**
- * CLC Forge — Rust Stack Adapter
- * Supports Rust (Actix/Axum), `cargo test`, `cargo clippy`, and Cargo Audit.
+ * CLC Kernel — Rust Stack Adapter
+ * Supports Rust, `cargo test`, `cargo clippy`, `cargo audit`, and memory safety.
  */
 
 const fs = require('fs');

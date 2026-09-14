@@ -252,7 +252,7 @@ describe('runDoctor', () => {
         const output = capturedOutput.join('\n');
         // Key English phrases that should be present
         assert.ok(output.includes('HEALTHY'), 'should output HEALTHY');
-        assert.ok(output.includes('CLC FORGE DOCTOR'), 'should output doctor header');
+        assert.ok(output.includes('CLC KERNEL DOCTOR') || output.includes('CLC FORGE DOCTOR'), 'should output doctor header');
         assert.ok(output.includes('PASS'), 'should output PASS');
         // Spanish phrases that should NOT be present
         const spanishWords = ['éxito', 'éxito', 'falló', 'problema', 'instalado', 'salvaguardas', 'leyes'];

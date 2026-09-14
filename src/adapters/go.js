@@ -1,6 +1,6 @@
 /**
- * CLC Forge — Go Stack Adapter
- * Supports Go (Gin/Fiber/Chi/Axum), `go test`, `golangci-lint`, and Go Clean Architecture.
+ * CLC Kernel — Go Stack Adapter
+ * Supports Golang apps, `go test`, golangci-lint AST, and Domain/UseCase Clean Architecture.
  */
 
 const fs = require('fs');

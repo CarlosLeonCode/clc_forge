@@ -29,12 +29,12 @@ function guardFileExists(file) {
 }
 
 describe('SAFEGUARD_CATALOG', () => {
-  it('exposes exactly 24 entries, one per safeguard the framework knows about', () => {
-    assert.strictEqual(SAFEGUARD_CATALOG.length, 24, `expected 24, got ${SAFEGUARD_CATALOG.length}`);
+  it('exposes exactly 26 entries, one per safeguard the framework knows about', () => {
+    assert.strictEqual(SAFEGUARD_CATALOG.length, 26, `expected 26, got ${SAFEGUARD_CATALOG.length}`);
     const names = SAFEGUARD_CATALOG.map(e => e.name);
     assert.deepStrictEqual(names, [
       'scan_secrets', 'check_architecture', 'check_custom', 'check_a11y',
-      'check_ui_reuse', 'check_performance', 'check_storybook', 'check_api_contracts',
+      'check_ui_reuse', 'check_performance', 'check_responsive', 'check_seo', 'check_storybook', 'check_api_contracts',
       'check_migrations', 'verify_tdd', 'check_scope', 'celery_guard', 'redis_guard',
       'postgres_guard', 'docker_guard', 'ruff', 'pytest', 'tsc', 'lint', 'graphify',
       'gentle_ai_review', 'check_openapi_drift', 'check_db_efficiency', 'check_observability',
@@ -90,9 +90,9 @@ describe('SAFEGUARD_CATALOG', () => {
     }
   });
 
-  it('flags exactly the 3 Slice C guards as planned', () => {
+  it('flags exactly the 2 Slice C guards as planned', () => {
     const planned = SAFEGUARD_CATALOG.filter(e => e.planned).map(e => e.name);
-    assert.deepStrictEqual(planned, ['check_openapi_drift', 'check_db_efficiency', 'check_observability']);
+    assert.deepStrictEqual(planned, ['check_openapi_drift', 'check_observability']);
   });
 
   it('keeps design defaults for the new observability guard (warning/advisory)', () => {

@@ -1,6 +1,6 @@
 /**
- * CLC Forge — PHP / Laravel Stack Adapter
- * Supports Laravel, Pest / PHPUnit, PHPStan, and Laravel Migration Idempotency.
+ * CLC Kernel — PHP / Laravel Stack Adapter
+ * Supports Laravel, Pest / PHPUnit, PHPStan AST, and Eloquent migration idempotency.
  */
 
 const fs = require('fs');

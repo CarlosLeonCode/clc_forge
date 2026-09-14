@@ -1,5 +1,5 @@
 /**
- * CLC Forge — Pro Terminal UI & ANSI Renderer
+ * CLC Kernel — Pro Terminal UI & ANSI Renderer
  * Brand Identity: The AI Agent Governance & Quality Engineering Engine
  */
 
@@ -26,14 +26,14 @@ const colors = {
 function printBanner() {
   console.clear();
   console.log(`${colors.cyan}
-  ██████╗██╗      ██████╗     ███████╗██████╗ ██████╗ ██╗███████╗
- ██╔════╝██║     ██╔════╝     ██╔════╝██╔══██╗██╔══██╗██║██╔════╝
- ██║     ██║     ██║    █████╗█████╗  ██║  ██║██████╔╝██║█████╗  
- ██║     ██║     ██║    ╚════╝██╔══╝  ██║  ██║██╔══██╗██║██╔══╝  
- ╚██████╗███████╗╚██████╗     ██║     ╚██████╔╝██║  ██║██║███████╗
-  ╚═════╝╚══════╝ ╚═════╝     ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝╚══════╝
+   ██████╗██╗      ██████╗     ██╗  ██╗███████╗██████╗ ███╗   ██╗███████╗██╗     
+  ██╔════╝██║     ██╔════╝     ██║ ██╔╝██╔════╝██╔══██╗████╗  ██║██╔════╝██║     
+  ██║     ██║     ██║    █████╗█████═╝ █████╗  ██████╔╝██╔██╗ ██║█████╗  ██║     
+  ██║     ██║     ██║    ╚════╝██╔═██╗ ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ██║     
+  ╚██████╗███████╗╚██████╗     ██║ ╚██╗███████╗██║  ██║██║ ╚████║███████╗███████╗
+   ╚═════╝╚══════╝ ╚═════╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝
 ${colors.reset}`);
-  console.log(`  ${colors.bgCyan} CLC FORGE ${colors.reset} ${colors.bold}The AI Agent Governance & Quality Engineering Engine${colors.reset} ${colors.gray}v1.0.0${colors.reset}\n`);
+  console.log(`  ${colors.bgCyan} CLC KERNEL ${colors.reset} ${colors.bold}The AI Agent Governance & Quality Engineering Engine${colors.reset} ${colors.gray}v1.2.4${colors.reset}\n`);
 }
 
 function printBox(title, items) {
@@ -59,7 +59,7 @@ function promptOptions(detected) {
       output: process.stdout
     });
 
-    console.log(`${colors.bold}   \x1b[32m[1]\x1b[0m Confirmar e Instalar CLC Forge ${colors.dim}(Recomendado)${colors.reset}`);
+    console.log(`${colors.bold}   \x1b[32m[1]\x1b[0m Confirmar e Instalar CLC Kernel ${colors.dim}(Recomendado)${colors.reset}`);
     console.log(`   \x1b[33m[2]\x1b[0m Forzar modo FRONTEND`);
     console.log(`   \x1b[33m[3]\x1b[0m Forzar modo BACKEND`);
     console.log(`   \x1b[90m[4] Cancelar${colors.reset}\n`);
@@ -77,7 +77,7 @@ function promptOptions(detected) {
         detected.projectType = 'backend';
         resolve(detected);
       } else {
-        console.log(`\n${colors.red}❌ Instalación de CLC Forge cancelada.${colors.reset}`);
+        console.log(`\n${colors.red}❌ Instalación de CLC Kernel cancelada.${colors.reset}`);
         process.exit(0);
       }
     });
@@ -85,8 +85,8 @@ function promptOptions(detected) {
 }
 
 function printSuccess(targetDir, isFront, config) {
-  console.log(`\n${colors.bgEmerald} SUCCESS ${colors.reset} ${colors.bold}${colors.emerald}¡CLC Forge instalado exitosamente!${colors.reset}\n`);
-  console.log(` 🔨 ${colors.bold}Proyecto Forjado:${colors.reset} ${colors.cyan}${targetDir}${colors.reset}`);
+  console.log(`\n${colors.bgEmerald} SUCCESS ${colors.reset} ${colors.bold}${colors.emerald}¡CLC Kernel instalado exitosamente!${colors.reset}\n`);
+  console.log(` 🔨 ${colors.bold}Proyecto Inicializado:${colors.reset} ${colors.cyan}${targetDir}${colors.reset}`);
   console.log(` 🛡️  ${colors.bold}Salvaguardas:${colors.reset} ${isFront ? `${colors.emerald}10 Guardias Frontend (A11y, Zod, Next/Image, UI Reuse, Storybook)` : `${colors.violet}7 Guardias Backend (TDD, Architecture, Scope, Secret Scan)`}${colors.reset}`);
   console.log(` 📝 ${colors.bold}Leyes & SDD:${colors.reset} AGENTS.md, sdds/, docs/Journal/ precargados`);
   console.log(` 🔒 ${colors.bold}Git Hooks:${colors.reset} Configurados en ${colors.amber}${config.gitHooks === 'husky' ? '.husky/pre-commit' : '.githooks/pre-commit'}${colors.reset}\n`);
