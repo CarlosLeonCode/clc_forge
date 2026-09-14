@@ -11,13 +11,13 @@
 > **El Motor Universal de Gobernanza para Agentes de IA & Orquestador AIUP.**
 > Creado por [CarlosLeonCode](https://github.com/carlosleoncode).
 
-Los agentes de IA (Claude, Cursor, Gemini) generan código a una velocidad extraordinaria, pero sin límites estrictos introducen deuda técnica, tests inventados y violaciones de arquitectura. **CLC Kernel** es el arnés definitivo para dominarlos.
+Los agentes de IA (Claude, Cursor, Gemini, Copilot) generan código a una velocidad sin precedentes. Sin embargo, sin límites estrictos introducen degradación arquitectónica, tests de falso positivo y deuda técnica invisible. **CLC Kernel** es el arnés de desarrollo definitivo para gobernarlos.
 
-Implementa un **Proceso Unificado de IA (AIUP)**—obligando a los LLMs a seguir ciclos de vida rigurosos de ingeniería de software (SDD, TDD, Arquitectura Limpia) sin importar el lenguaje de programación.
+Establece un **Proceso Unificado de IA (AIUP)**—obligando a los LLMs a operar como ingenieros de software disciplinados en cualquier lenguaje de programación (Next.js, FastAPI, Django, Astro, Rails, Go, Rust, Laravel).
 
 ---
 
-## 🎯 Posicionamiento: Una Nueva Categoría — AI Agent Governance
+## 🎯 1. Posicionamiento: Una Nueva Categoría — AI Agent Governance
 
 CLC Kernel **no** es "otro framework de IA" ni una colección de prompts. Define una categoría de ingeniería propia: **Gobernanza Determinística de Agentes de IA (AI Agent Governance)**.
 
@@ -29,41 +29,63 @@ CLC Kernel **no** es "otro framework de IA" ni una colección de prompts. Define
 
 ---
 
-## ⚙️ El Motor Dual: SDD & TDD (Configurable)
-La columna vertebral de la metodología CLC Kernel se apoya en dos pilares que obligan al agente a pensar antes de teclear:
-- 📝 **SDD (Spec-Driven Development):** Los agentes tienen prohibido escribir código sin antes generar una especificación local (en `sdds/`) y pasar un gate de aprobación humana (Human-in-the-Loop / HIT).
-- 🧪 **TDD (Test-Driven Development):** Los agentes deben demostrar una transición Rojo-a-Verde. Si el test no falla primero, el arnés rechaza la implementación.
+## 🏛️ 2. Pilares Conceptuales del Ecosistema
 
-*¿No te convence el TDD? ¿Preferís BDD o un ciclo de vida custom?* Como CLC Kernel es un Orquestador interactivo, al correr `clckernel start` el agente te preguntará cuál es tu metodología preferida y ajustará las fases de ejecución del `.clckernel.yaml` de forma dinámica.
+CLC Kernel se apoya en cinco fundamentos de ingeniería diseñados para erradicar los vicios del "Vibe Coding":
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       AI UNIFIED PROCESS (AIUP)                             │
+├─────────────┬─────────────┬─────────────┬──────────────────┬────────────────┤
+│   1. SDD    │   2. HIT    │   3. TDD    │     4. AST       │   5. MIRROR    │
+│ Spec-Driven │ Human-in-the│ Transición  │ Linters de Capas │ Single Source  │
+│ Development │    Loop     │ Rojo-a-Verde│  Determinísticos │ of Truth Sync  │
+└─────────────┴─────────────┴─────────────┴──────────────────┴────────────────┘
+```
+
+### 📝 A. Spec-Driven Development (SDD)
+Los agentes sufren del *sesgo de inmediatez*—escribir código antes de entender los requerimientos. CLC Kernel prohíbe la modificación directa: el agente debe primero redactar una especificación técnica local (gitignorada en `sdds/{feature-name}/`) detallando objetivos, capas afectadas y casos borde.
+
+### 🛑 B. Human-in-the-Loop Gate (HIT)
+Antes de tocar una sola línea de código en producción, el agente debe presentar escenarios de prueba concretos al desarrollador para su validación y aprobación. **El humano es el Arquitecto/Director; la IA es el Ejecutor.**
+
+### 🧪 C. Test-Driven Development (TDD Rojo-a-Verde)
+Los agentes suelen generar "tests tautológicos" que nunca fallan ante bugs reales. CLC Kernel impone TDD genuino: el agente debe escribir un test de regresión que falle primero (Fase Roja) y demostrar el fallo antes de escribir la implementación (Fase Verde).
+
+### 🛡️ D. Salvaguardas AST Determinísticas (Linters Nativos)
+Las instrucciones en markdown se olvidan con facilidad. CLC Kernel provisiona linters basados en el Árbol de Sintaxis Abstracta (AST) en el lenguaje nativo del stack (Python `ast`, Go `ast`, RuboCop, PHPStan, TypeScript AST). Estos guardias validan el aislamiento de capas de Clean Architecture, previenen fugas de secretos, auditan eficiencia de queries y bloquean commits inválidos.
+
+### 🔗 E. Single Source of Truth (SSOT) & Espejado Dinámico (Mirroring)
+Mantener archivos de reglas separados para Cursor, Claude, Windsurf, Copilot y Gemini produce desincronización y deriva de contexto. CLC Kernel lo resuelve mediante **Espejado Dinámico**:
+- `AGENTS.md` se forja como el **Single Source of Truth** (Única Fuente de Verdad).
+- Symlinks multiplataforma proyectan automáticamente `AGENTS.md` hacia:
+  - 🧠 `CLAUDE.md` (Claude Desktop / Windsurf)
+  - 🌌 `GEMINI.md` (Gemini CLI / Project IDX)
+  - 💠 `.cursorrules` & `.cursor/rules/clckernel_context.mdc` (Cursor)
+  - ✈️ `.github/copilot-instructions.md` (GitHub Copilot)
+  - 🛸 `.antigravity/rules.md` (Antigravity)
+- *Editás una sola vez en `AGENTS.md` y todos los IDEs absorben el contexto de forma instantánea y con cero duplicación.*
 
 ---
 
-## 💡 Por Qué Existe CLC Kernel
-Librados a su suerte, los agentes de IA sufren del "sesgo de inmediatez"—se lanzan a escribir código sin planificar. Esto genera fallas silenciosas en producción:
-- ❌ **Decaimiento Arquitectónico:** Mezclar lógica de rutas con llamadas a la base de datos en lugar de respetar el aislamiento de capas (Arquitectura Limpia).
-- ❌ **Duplicación de UI:** Inventar colores hexadecimales arbitrarios y HTML crudo en lugar de reutilizar los tokens semánticos del sistema de diseño.
-- ❌ **TDD de Falso Positivo:** Declarar que una feature funciona sin jamás demostrar la transición Rojo-a-Verde.
-- ❌ **Fugas de Seguridad:** Commitear accidentalmente API Keys o exponer DTOs privados del backend al cliente.
+## 💡 3. Por Qué Existe CLC Kernel
 
-CLC Kernel resuelve esto transformando al LLM de una "herramienta de autocompletado" en un **Ingeniero de Software** disciplinado, atado a linters determinísticos de AST y gates de planificación obligatorios.
+Librados a su suerte, los agentes de IA generan **Deuda de Comprensión (Comprehension Debt)**—un código que crece más rápido que la capacidad del equipo de mantener su arquitectura:
 
 <div align="center">
   <img width="900" alt="clckernel_comparison_es" src="https://github.com/user-attachments/assets/4d2e6651-15be-46f6-ae12-c8274b6492ca" />
   <p><em>Izquierda: Agente de IA sin gobernanza — código caótico y alucinado. Derecha: Agente con CLC Kernel AIUP — estructurado, seguro y arquitectónicamente correcto.</em></p>
 </div>
 
----
-
-## 🤝 Sinergia con Engram (Memoria + Gobernanza)
-Para construir sistemas de IA verdaderamente autónomos, un agente necesita dos cosas: **Proceso** y **Memoria**.
-- **CLC Kernel** aporta el *Proceso* (Gobernanza AIUP, ciclos de vida SDD/TDD, y salvaguardas de ejecución).
-- **Engram (MCP)** aporta la *Memoria* (Contexto de largo plazo, ADRs, y persistencia de sesión).
-
-Están diseñados para ser el stack simbiótico perfecto. Mientras **Engram** recuerda *por qué* se tomó una decisión arquitectónica hace tres meses, **CLC Kernel** impone *cómo* el agente escribe el código hoy para respetar esa decisión.
+- ❌ **Decaimiento Arquitectónico:** Mezclar lógica de rutas con llamadas a la base de datos en lugar de respetar el aislamiento de capas.
+- ❌ **Duplicación de UI:** Inventar colores hexadecimales arbitrarios y HTML crudo en lugar de reutilizar los tokens del sistema de diseño.
+- ❌ **Tests de Falso Positivo:** Declarar que una feature funciona sin jamás demostrar la transición Rojo-a-Verde.
+- ❌ **Fugas de Seguridad:** Commitear accidentalmente API Keys o exponer DTOs privados del backend al cliente.
 
 ---
 
-## 🧩 Dependencias Deseadas del Ecosistema (Opcionales y Modulares)
+## 🧩 4. Dependencias Deseadas del Ecosistema (Opcionales y Modulares)
+
 CLC Kernel se enfoca estrictamente en **Gobernanza, Proceso y Salvaguardas de Calidad**. Intencionalmente **no** empaqueta un motor de grafos propietario ni una base de datos de persistencia monolítica. En su lugar, delega esas capacidades en herramientas complementarias especializadas (con degradación elegante si no se encuentran instaladas en el entorno):
 
 | Herramienta Complementaria | Rol | Por Qué es Deseada | Comportamiento si no está |
@@ -75,43 +97,34 @@ CLC Kernel se enfoca estrictamente en **Gobernanza, Proceso y Salvaguardas de Ca
 
 ---
 
-## 🧠 El Paradigma de la CLI Conversacional
-CLC Kernel no es solo una CLI de terminal; opera de forma nativa dentro de tu LLM. Al inicializarse, inyecta un **Agentic Playbook (`SKILL.md`)** en tu repositorio, convirtiendo cualquier IDE con IA en un asistente interactivo de gobernanza.
+## 🧠 5. El Paradigma de la CLI Conversacional
 
-Simplemente abrí el chat de tu IA y escribí estos intents:
-- 🚀 **`clckernel start`**: El agente detecta tu stack automáticamente, propone un ciclo de gobernanza, y materializa una especificación declarativa `.clckernel.yaml`.
-- 🛠️ **`clckernel create_guard`**: El agente escribe un linter AST personalizado en el **lenguaje nativo de tu ecosistema** (Ruby, Go, Rust, Python, JS).
-- 🔄 **`clckernel add_phase` / `remove_guard`**: Mutá el ciclo de vida AIUP de forma interactiva sin tocar YAML manualmente.
+CLC Kernel opera tanto en tu terminal como dentro del chat de tu IDE con IA. Al inicializarse, inyecta un **Agentic Playbook (`SKILL.md`)** en tu repositorio, convirtiendo cualquier LLM en un asistente interactivo de gobernanza:
 
----
-
-## 🔗 Symlinking Universal de IDEs (Zero-Config)
-Inicializá una vez, gobernás en todas partes. CLC Kernel genera automáticamente symlinks multiplataforma apuntando al Single Source of Truth (`AGENTS.md`), asegurando absorción instantánea del contexto para:
-- 💠 **Cursor** (`.cursorrules` & `.cursor/rules/clckernel_context.mdc`)
-- 🧠 **Claude Desktop / Windsurf** (`CLAUDE.md`)
-- 🌌 **Gemini CLI / Project IDX** (`GEMINI.md`)
-- ✈️ **GitHub Copilot** (`.github/copilot-instructions.md`)
-- 🛸 **Antigravity** (`.antigravity/rules.md`)
+- 🚀 **`clckernel start`**: Detecta tu stack automáticamente, propone un ciclo de gobernanza, y materializa `.clckernel.yaml`.
+- 🛠️ **`clckernel create_guard`**: Escribe un linter AST personalizado en el lenguaje nativo de tu stack (`tools/guards/`).
+- 🔄 **`clckernel add_phase` / `remove_guard`**: Modifica el ciclo de vida AIUP interactivamente sin editar YAML manualmente.
 
 ---
 
-## 🌐 Adaptadores Polyglot por Stack
-CLC Kernel es 100% agnóstico al framework. Cuenta con adaptadores dedicados que detectan tu stack automáticamente y aplican reglas nativas:
+## 🌐 6. Adaptadores Polyglot por Stack
+
+CLC Kernel cuenta con adaptadores dedicados para los principales ecosistemas:
 
 | Ecosistema | Firma de Detección | Test Runner | Salvaguardas Aplicadas |
 |---|---|---|---|
-| ⚛️ **Next.js** | `next` | Vitest / Jest | Reutilización de UI, Tokens Semánticos, Reglas RSC, Zod, A11y |
+| ⚛️ **Next.js** | `next` | Vitest / Jest | Reutilización de UI, Tokens Semánticos, Reglas RSC, Zod, A11y, Performance |
 | ⚡ **FastAPI** | `fastapi` | Pytest | Pydantic V2, Idempotencia Alembic, AST Arquitectura Limpia |
 | 💎 **Rails** | `Gemfile` | RSpec | AST RuboCop, Seguridad Brakeman, Idempotencia de Migraciones |
 | 🐹 **Golang** | `go.mod` | `go test` | AST `golangci-lint`, Arquitectura Domain/UseCase |
 | 🦀 **Rust** | `Cargo.toml` | `cargo test` | AST `cargo clippy`, `cargo audit`, Seguridad de Memoria Estricta |
 | 🐘 **Laravel** | `artisan` | Pest / PHPUnit | AST PHPStan, Detección de N+1 Eloquent, Migraciones |
-| 🎸 **Django** | `manage.py` | `pytest-django` | Idempotencia ORM Django, AST Ruff, Scope Guard |
+| 🎸 **Django** | `manage.py` | `pytest-django` | Idempotencia ORM Django, AST Ruff, Scope Guard, DB Efficiency |
 | 🚀 **Astro** | `astro.config` | Playwright | Tokens Tailwind v4, Guard de Content Collection Schema |
 
 ---
 
-## ⚡ Guía Paso a Paso (Ciclo de Vida Completo)
+## ⚡ 7. Guía Paso a Paso (Ciclo de Vida Completo)
 
 ```
 [1. Terminal]           [2. Chat del LLM]            [3. Bucle TDD]                [4. Git Commit]
@@ -120,37 +133,31 @@ npx clckernel   ───►   clckernel start   ───►   "Feature X con h
 ```
 
 ### 1️⃣ Paso 1: Inicializar el Repositorio (Terminal)
-Navegá a la raíz de tu proyecto y ejecutá:
 ```bash
 npx clckernel
 ```
-- **Qué sucede:** Detecta tu stack automáticamente (e.g. FastAPI, Next.js, Rails), genera `AGENTS.md`, provisiona `.githooks/` o `.husky/`, crea herramientas AST determinísticas en `tools/`, y enlaza reglas de IDE (`.cursorrules`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.antigravity/rules.md`).
+Detecta tu framework, genera `AGENTS.md`, crea symlinks dinámicos para todos los IDEs, provisiona hooks pre-commit (`.husky/` o `.githooks/`) y crea herramientas AST en `tools/`.
 
 ### 2️⃣ Paso 2: Abrir tu IDE con IA e Inicializar (CLI Conversacional)
-Abrí el proyecto en Cursor, Claude Code, Gemini CLI, Windsurf, o Copilot. En el chat, pedí:
+Abrí Cursor, Claude Code, Gemini CLI, Windsurf o Copilot y escribí:
 > `clckernel start`
-- **Qué sucede:** El agente escanea tu código silenciosamente, propone un plan de gobernanza AIUP a medida de tu framework, y genera tu especificación `.clckernel.yaml` tras tu confirmación.
+El agente escanea tu código en silencio, propone un plan de gobernanza AIUP adaptado a tu stack y genera `.clckernel.yaml`.
 
-### 3️⃣ Paso 3: Desarrollo Diario con el Arnés
-Al solicitar features, correcciones o refactors, invocá el trigger del harness:
+### 3️⃣ Paso 3: Desarrollar con el Arnés AIUP
+Al pedir una funcionalidad o corrección, activá el workflow:
 > *"Agregá el endpoint de autenticación. **Usá el workflow / harness**."*
-- **Qué sucede:** El agente ejecuta automáticamente el ciclo AIUP de 10 pasos:
-  1. **SDD & Research:** Escribe la especificación en `sdds/{feature}/`.
-  2. **Gate HIT (Human-in-the-Loop):** Presenta los escenarios de test para tu revisión antes de tocar código.
-  3. **TDD (Fase Roja):** Escribe primero los tests de regresión fallidos.
-  4. **Implementación (Fase Verde):** Escribe código limpio en capas hasta que los tests pasen.
-  5. **Auditoría:** Ejecuta `tools/audit` para garantizar cero fugas de capas o secretos.
+El agente ejecuta de forma autónoma el ciclo de 10 pasos: **SDD Spec -> Gate HIT -> TDD Rojo-a-Verde -> Implementación Limpia -> Auditoría AST**.
 
 ### 4️⃣ Paso 4: Verificación Determinística de Guards (Commit)
-Stageá y commiteá tus cambios:
 ```bash
 git add .
 git commit -m "feat(auth): add user authentication endpoint"
 ```
-- **Qué sucede:** Los hooks pre-commit ejecutan escáneres AST automáticos (Arquitectura Limpia, Fuga de Secretos, Scope Guard, Idempotencia de Migraciones). Cualquier violación bloquea el commit determinísticamente.
+Los hooks pre-commit ejecutan escáneres AST automáticos (Clean Architecture, Fuga de Secretos, Scope Guard, Idempotencia de Migraciones). Cualquier violación bloquea el commit de inmediato.
 
-### 5️⃣ Paso 5: Verificar la Salud del Repositorio en Cualquier Momento (Terminal)
-Para verificar si un repositorio cumple con el Estándar de Calidad de CLC Kernel:
+### 5️⃣ Paso 5: Auditar la Salud del Repositorio en Cualquier Momento (Terminal)
 ```bash
 npx clckernel doctor
 ```
+Ejecuta el **CLC Kernel Doctor** para verificar el 100% de cumplimiento en `AGENTS.md`, `sdds/`, `tools/` y hooks de Git.
+
