@@ -1,0 +1,44 @@
+# CLC Kernel — AI Agent Governance Configuration
+# Schema validated by src/config.js
+
+gate_mode: hard
+
+phases:
+  - research
+  - plan
+  - test-scenarios
+  - hit
+  - tdd-red
+  - green
+  - audit
+  - rdd-review
+  - handover
+  - close
+
+active_guards:
+  - scan_secrets
+  - check_architecture
+  - check_custom
+  - check_scope
+  - gentle_ai_review
+
+severities:
+  scan_secrets: error
+  check_architecture: error
+  check_custom: error
+  check_scope: error
+  gentle_ai_review: error
+
+scope: .
+
+exclude_paths:
+  - "node_modules/**"
+  - "coverage/**"
+  - ".git/**"
+  - ".antigravity/**"
+
+layers:
+  - src
+  - tools
+  - test
+  - bin

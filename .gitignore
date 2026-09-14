@@ -1,2 +1,10 @@
 .atl/
 sdds/
+
+
+# Local Spec-Driven Development (SDD) files
+sdds/*
+!sdds/.gitkeep
+openspec/*
+!openspec/.gitkeep
+.ruff_cache/

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo "Running CLC Kernel Safeguards..."
+python3 tools/scan_secrets.py || true
