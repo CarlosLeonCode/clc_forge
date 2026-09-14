@@ -1,16 +1,47 @@
 ---
+import { ui } from '../i18n/ui.js';
+
+interface Props {
+  lang?: 'en' | 'es';
+}
+
+const { lang = 'en' } = Astro.props;
+const t = ui[lang];
+const isEs = lang === 'es';
+
 const stacks = [
-  { name: "Next.js / React", ecosystem: "TypeScript", runner: "Vitest / Jest", type: "Frontend" },
-  { name: "FastAPI", ecosystem: "Python", runner: "Pytest", type: "Backend" },
-  { name: "Django", ecosystem: "Python", runner: "Pytest / Django Test", type: "Fullstack" },
-  { name: "Astro", ecosystem: "TypeScript", runner: "Vitest / Playwright", type: "Web & Content" },
-  { name: "Ruby on Rails", ecosystem: "Ruby", runner: "RSpec / Minitest", type: "Backend" },
-  { name: "Golang", ecosystem: "Go", runner: "go test", type: "Microservices" },
-  { name: "Rust", ecosystem: "Rust", runner: "cargo test", type: "Systems" },
-  { name: "Laravel", ecosystem: "PHP", runner: "Pest / PHPUnit", type: "Fullstack" },
+  { name: "Next.js / React", ecosystem: "TypeScript", runner: "Vitest / Jest", type: isEs ? "Frontend" : "Frontend" },
+  { name: "FastAPI", ecosystem: "Python", runner: "Pytest", type: isEs ? "Backend" : "Backend" },
+  { name: "Django", ecosystem: "Python", runner: "Pytest / Django Test", type: isEs ? "Fullstack" : "Fullstack" },
+  { name: "Astro", ecosystem: "TypeScript", runner: "Vitest / Playwright", type: isEs ? "Web y Contenido" : "Web & Content" },
+  { name: "Ruby on Rails", ecosystem: "Ruby", runner: "RSpec / Minitest", type: isEs ? "Backend" : "Backend" },
+  { name: "Golang", ecosystem: "Go", runner: "go test", type: isEs ? "Microservicios" : "Microservices" },
+  { name: "Rust", ecosystem: "Rust", runner: "cargo test", type: isEs ? "Sistemas" : "Systems" },
+  { name: "Laravel", ecosystem: "PHP", runner: "Pest / PHPUnit", type: isEs ? "Fullstack" : "Fullstack" },
 ];
 
-const harnesses = [
+const harnesses = isEs ? [
+  {
+    name: "Cursor / Windsurf",
+    file: ".cursorrules y .cursor/rules/*.mdc",
+    desc: "Enlace simbólico directo a la ley de arquitectura y límites de capas del repositorio.",
+  },
+  {
+    name: "Google Antigravity",
+    file: ".antigravity/rules.md y skills",
+    desc: "Sincronización fluida de skills personalizados, compuertas de auditoría y reglas de ejecución.",
+  },
+  {
+    name: "Claude Code",
+    file: "CLAUDE.md",
+    desc: "Exigencia estricta de verificación TDD y compuertas AST obligatorias antes de comitear.",
+  },
+  {
+    name: "GitHub Copilot",
+    file: ".github/copilot-instructions.md",
+    desc: "Inyección de contexto consistente para completado de código y sugerencias en chat.",
+  },
+] : [
   {
     name: "Cursor / Windsurf",
     file: ".cursorrules & .cursor/rules/*.mdc",
@@ -39,12 +70,12 @@ const harnesses = [
     
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-16">
       <div class="lg:col-span-5">
-        <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Universal Governance</h2>
+        <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">{t['polyglot.kicker']}</h2>
         <p class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-4">
-          One Law for Every Stack
+          {t['polyglot.title']}
         </p>
         <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-          Regardless of your framework or language, CLC Kernel detects your project signature, installs native linters, and materializes enforceable rules for your preferred AI coding assistants.
+          {t['polyglot.desc']}
         </p>
       </div>
 
@@ -66,7 +97,7 @@ const harnesses = [
     <!-- AI Harness Integration Grid -->
     <div>
       <h3 class="text-xs font-mono uppercase text-slate-500 font-semibold tracking-wider mb-4">
-        Supported AI Agent Harnesses:
+        {t['polyglot.harnessTitle']}
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {harnesses.map((harness) => (

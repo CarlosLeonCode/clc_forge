@@ -1,5 +1,58 @@
 ---
-const steps = [
+import { ui } from '../i18n/ui.js';
+
+interface Props {
+  lang?: 'en' | 'es';
+}
+
+const { lang = 'en' } = Astro.props;
+const t = ui[lang];
+const isEs = lang === 'es';
+
+const steps = isEs ? [
+  {
+    phase: "01",
+    name: "Investigación y Causa Raíz",
+    category: "Contexto",
+    desc: "Inspecciona rutas de código, dependencias AST y trazas de error antes de editar. Prohíbe alucinaciones sin evidencia del codebase.",
+    details: "Cero ediciones a ciegas. El contexto debe probarse antes de tocar archivos.",
+  },
+  {
+    phase: "02",
+    name: "Planificación Local SDD",
+    category: "Arquitectura",
+    desc: "Genera especificaciones locales de desarrollo guiado por specs (sdds/) con límites de alcance y contratos de API claros.",
+    details: "100% local y gitignored para aislar la intención de desarrollo.",
+  },
+  {
+    phase: "03",
+    name: "Fase Roja TDD (Regresión)",
+    category: "Verificación",
+    desc: "Escribe primero las pruebas unitarias que fallan. El arnés registra el código de salida de fallo como prueba del defecto.",
+    details: "Salida de test fallido obligatoria antes de implementar soluciones.",
+  },
+  {
+    phase: "04",
+    name: "Implementación Limpia (Verde)",
+    category: "Ejecución",
+    desc: "Implementa el cambio para hacer pasar la suite de pruebas respetando estrictamente el aislamiento de capas de Clean Architecture.",
+    details: "Las capas de presentación no pueden consultar la base de datos directamente.",
+  },
+  {
+    phase: "05",
+    name: "Compuerta de Auditoría AST",
+    category: "Salvaguardas",
+    desc: "Ejecuta linters AST, escáneres de secretos, detección de N+1 y validaciones responsive antes del stage.",
+    details: "Scripts deterministas sin dependencias en Node.js y Python.",
+  },
+  {
+    phase: "06",
+    name: "DoD y Pre-Commit Estricto",
+    category: "Entrega",
+    desc: "Los hooks de pre-commit verifican que todas las salvaguardas hayan aprobado antes de autorizar el commit en git.",
+    details: "Bloquea commits no conformes automáticamente en el límite de git.",
+  },
+] : [
   {
     phase: "01",
     name: "Research & Root Cause",
@@ -48,12 +101,12 @@ const steps = [
 <section id="lifecycle" class="py-20 md:py-28 border-t border-slate-200 bg-[#f8fafc]/70">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mb-16">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Deterministic Workflow</h2>
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">{t['loop.kicker']}</h2>
       <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
-        The Agent Governance Lifecycle
+        {t['loop.title']}
       </p>
       <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-        AI coding assistants should never push unverified code. CLC Kernel enforces a strict, multi-phase verification loop that stops regression and hallucination at the source.
+        {t['loop.desc']}
       </p>
     </div>
 

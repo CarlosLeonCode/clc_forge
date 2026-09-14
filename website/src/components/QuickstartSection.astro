@@ -1,5 +1,34 @@
 ---
-const steps = [
+import { ui } from '../i18n/ui.js';
+
+interface Props {
+  lang?: 'en' | 'es';
+}
+
+const { lang = 'en' } = Astro.props;
+const t = ui[lang];
+const isEs = lang === 'es';
+
+const steps = isEs ? [
+  {
+    step: "1",
+    title: "Inicialización Interactiva",
+    desc: "Detecta automáticamente tu stack, genera el archivo .clckernel.yaml y vincula las leyes del agente.",
+    cmd: "npx clckernel start",
+  },
+  {
+    step: "2",
+    title: "Auditoría de Salud del Entorno",
+    desc: "Valida la instalación de hooks, disponibilidad de runners de test y sintaxis AST.",
+    cmd: "npx clckernel doctor",
+  },
+  {
+    step: "3",
+    title: "Ejecución Manual de la Compuerta",
+    desc: "Ejecuta las salvaguardas multi-guard contra el git diff local antes de hacer stage.",
+    cmd: "node tools/audit.js",
+  },
+] : [
   {
     step: "1",
     title: "Interactive Initialization",
@@ -23,12 +52,12 @@ const steps = [
 
 <section id="quickstart" class="py-20 md:py-28 border-t border-slate-200 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Instant Setup</h2>
+    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">{t['quickstart.kicker']}</h2>
     <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
-      Initialize Your Governance Harness
+      {t['quickstart.title']}
     </p>
     <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto mb-12">
-      Zero heavy dependencies. Run the CLI in your project root to provision enforceable agent guardrails immediately.
+      {t['quickstart.desc']}
     </p>
 
     <div class="space-y-4 text-left">

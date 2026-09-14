@@ -1,5 +1,64 @@
 ---
-const guards = [
+import { ui } from '../i18n/ui.js';
+
+interface Props {
+  lang?: 'en' | 'es';
+}
+
+const { lang = 'en' } = Astro.props;
+const t = ui[lang];
+const isEs = lang === 'es';
+
+const guards = isEs ? [
+  {
+    name: "scan_secrets",
+    lang: "Node.js y Python AST",
+    category: "Seguridad",
+    desc: "Escanea diffs en busca de llaves privadas, credenciales de AWS/Stripe, tokens JWT y contraseñas de BD sin falsos positivos.",
+  },
+  {
+    name: "check_architecture",
+    lang: "JS y Python AST",
+    category: "Arquitectura",
+    desc: "Valida los límites de capas en Clean Architecture (Dominio -> Caso de Uso -> Infraestructura) y bloquea consultas directas a BD en vistas.",
+  },
+  {
+    name: "check_db_efficiency",
+    lang: "Python AST",
+    category: "Rendimiento",
+    desc: "Detecta patrones de consulta N+1 en bucles y exige select_related / prefetch_related / joinedload en consultas ORM.",
+  },
+  {
+    name: "check_responsive",
+    lang: "Node.js AST",
+    category: "Frontend",
+    desc: "Exige diseño mobile-first, detecta anchos fijos en px (width > 400px) y exige áreas táctiles mínimas de 44x44px.",
+  },
+  {
+    name: "check_seo",
+    lang: "Node.js AST",
+    category: "SEO y CWV",
+    desc: "Valida OpenGraph, etiquetas GEO, jerarquía única de <h1> y marcas de prioridad LCP en imágenes principales.",
+  },
+  {
+    name: "check_migrations",
+    lang: "Python AST",
+    category: "Base de Datos",
+    desc: "Audita migraciones de Alembic y Django para garantizar que las operaciones sean reversibles, seguras e idempotentes.",
+  },
+  {
+    name: "docker_guard",
+    lang: "Python AST",
+    category: "Infraestructura",
+    desc: "Exige directivas USER no-root en Dockerfiles, bloquea secretos en ENV y requiere directivas HEALTHCHECK.",
+  },
+  {
+    name: "check_scope",
+    lang: "Python AST",
+    category: "Gobernanza",
+    desc: "Verifica que los diffs en git no excedan el alcance de archivos autorizado en el plan SDD local.",
+  },
+] : [
   {
     name: "scan_secrets",
     lang: "Node.js & Python AST",
@@ -54,12 +113,12 @@ const guards = [
 <section id="safeguards" class="py-20 md:py-28 border-t border-slate-200 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mb-16">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Deterministic Linting</h2>
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">{t['safeguards.kicker']}</h2>
       <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
-        Zero-Dependency Safeguards
+        {t['safeguards.title']}
       </p>
       <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-        Built exclusively using native Node.js and Python AST parsers. Fast execution, zero bloated runtime npm dependencies, and deterministic rules.
+        {t['safeguards.desc']}
       </p>
     </div>
 
@@ -81,7 +140,7 @@ const guards = [
           </div>
           
           <div class="pt-3 border-t border-slate-100 text-[11px] font-mono text-slate-500">
-            Engine: <span class="text-slate-800 font-medium">{guard.lang}</span>
+            {isEs ? 'Motor:' : 'Engine:'} <span class="text-slate-800 font-medium">{guard.lang}</span>
           </div>
         </div>
       ))}
