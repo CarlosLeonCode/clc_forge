@@ -67,7 +67,11 @@ clckernel/
 │   ├── check_migrations.py     # Alembic / Django migration idempotency guard
 │   ├── check_db_efficiency.py  # ORM N+1 & query efficiency guard
 │   ├── check_scope.py          # Git diff vs SDD authorized scope guard
-│   └── verify_tdd.py           # Red-to-Green transition proof checker
+│   ├── verify_tdd.py           # Red-to-Green transition proof checker
+│   ├── celery_guard.py         # Celery broker & result backend safety guard
+│   ├── redis_guard.py          # Redis decode_responses & timeout guard
+│   ├── postgres_guard.py       # PostgreSQL raw query & injection guard
+│   └── docker_guard.py         # Docker non-root USER & healthcheck guard
 ├── test/                       # Comprehensive node:test runner suites
 ├── README.md                   # Primary documentation (English)
 ├── README.es.md                # Primary documentation (Spanish)
@@ -76,7 +80,36 @@ clckernel/
 
 ---
 
-## 3. Recommended Ecosystem Companions
+## 3. Active Safeguard Catalog & Deterministic Rules
+
+All AI agents operating in repositories provisioned by CLC Kernel are deterministically governed by the following safeguard layers:
+
+### 📱 Frontend & UX Quality Safeguards
+- **`check_responsive.js`**: Enforces mobile-first responsive design, warns against fixed-width pixel overflows (`width: >400px` without media queries), and requires minimum touch targets (44x44px or 48x48px) for buttons and interactive controls.
+- **`check_seo.js`**: Validates essential SEO title/description tags, OpenGraph (`og:title`, `og:image`), GEO tags (`geo.position`, `ICBM`), heading hierarchy (`<h1>` uniqueness), and LCP image `priority` / `fetchpriority="high"`.
+- **`check_a11y.js`**: Audits ARIA roles, missing `alt` attributes on images, and keyboard navigable interactive controls.
+- **`check_ui_reuse.js`**: Prevents duplicate UI classes and arbitrary styling by enforcing the reuse of design system primitives in `components/ui/`.
+- **`check_performance.js`**: Enforces framework-native image optimization (`next/image`, `astro:assets`) and prevents barrel-file imports that break tree-shaking.
+- **`check_api_contracts.js`**: Enforces runtime schema validation (Zod) on all external HTTP requests and API boundaries.
+- **`check_storybook.js`**: Audits Storybook `.stories.tsx` coverage for all new UI primitives.
+
+### 🏛️ Backend, Architecture & Data Safeguards
+- **`check_architecture.js / .py`**: Validates Clean Architecture layer boundaries (Domain -> Use Case -> Interface -> Infrastructure) and prevents presentation/route handlers from calling DB queries directly.
+- **`check_db_efficiency.py`**: Detects N+1 query patterns in loops and enforces eager loading (`select_related`, `prefetch_related` in Django; `joinedload` in SQLAlchemy).
+- **`check_migrations.py`**: Ensures database migrations (Alembic / Django) are idempotent, reversible, and do not drop tables/columns destructively without down-revisions.
+- **`scan_secrets.js / .py`**: Scans diffs for private keys, AWS/Stripe credentials, JWT secrets, and hardcoded connection strings.
+- **`check_scope.py`**: Compares modified files against the authorized scope defined in the local SDD specification.
+- **`verify_tdd.py`**: Validates the transition proof from a failing regression test (Red Phase) to a passing implementation (Green Phase).
+
+### 🐳 Infrastructure & Technology Guards
+- **`docker_guard.py`**: Checks Dockerfiles for non-root `USER` directives, prevents `ENV` secret exposures, and requires `HEALTHCHECK` definitions.
+- **`celery_guard.py`**: Enforces broker URL isolation via environment variables, `@shared_task(ignore_result=True)` defaults, and secure backend configs.
+- **`redis_guard.py`**: Enforces `decode_responses=True`, mandatory `socket_connect_timeout`, and prevents hardcoded Redis host strings.
+- **`postgres_guard.py`**: Blocks raw SQL string formatting / Python f-strings in queries to prevent SQL injection vulnerabilities.
+
+---
+
+## 4. Recommended Ecosystem Companions
 CLC Kernel is strictly focused on **Governance, Process & Quality Guards**. It relies modularly on companion tools with graceful degradation:
 - 🧠 **Engram (MCP):** Long-term memory, session state, and architectural decision records (ADRs).
 - 🕸️ **Graphify:** Repository knowledge graphs and visual topology mapping.
@@ -84,7 +117,7 @@ CLC Kernel is strictly focused on **Governance, Process & Quality Guards**. It r
 
 ---
 
-## 4. Coding & Design Principles
+## 5. Coding & Design Principles
 - **CONCEPTS > CODE:** Never add boilerplate without understanding architectural layer boundaries.
 - **Zero-Dependency Core:** The CLI engine and tool scripts must use native Node.js / Python built-ins wherever possible (zero runtime npm dependencies for the parser and linters).
 - **Polyglot Fidelity:** Native guards must be written in the ecosystem's native idioms (Go AST for Go, Python AST for Python, JS/TS AST for Node).

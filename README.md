@@ -53,7 +53,10 @@ Before touching a single line of production code, the agent must present concret
 AI agents frequently generate "tautological tests" that never fail against bugs. CLC Kernel enforces real TDD: the agent must produce a failing regression test (Red Phase) and prove failure before writing implementation code (Green Phase).
 
 ### 🛡️ D. Deterministic AST Safeguards (Native Code Linters)
-Markdown instructions can be forgotten by LLMs. CLC Kernel provisions deterministic Abstract Syntax Tree (AST) linters in the stack's native language (Python `ast`, Go `ast`, RuboCop, PHPStan, TypeScript AST). These guards physically validate layer boundaries, prevent secret leaks, check database query efficiency, and block non-compliant commits.
+Markdown instructions can be forgotten by LLMs. CLC Kernel provisions deterministic Abstract Syntax Tree (AST) linters in the stack's native language (Python `ast`, Go `ast`, RuboCop, PHPStan, TypeScript AST). These guards physically validate code changes and block non-compliant commits:
+- **📱 Frontend & UX:** Mobile-first responsive breakpoints & 44px touch targets (`check_responsive`), SEO metadata/GEO tags/LCP priority (`check_seo`), ARIA accessibility (`check_a11y`), UI primitive reuse (`check_ui_reuse`), image optimization & tree-shaking (`check_performance`), and Zod API contracts (`check_api_contracts`).
+- **🏛️ Backend & Architecture:** Clean Architecture layer boundaries (`check_architecture`), N+1 query loop prevention (`check_db_efficiency`), migration idempotency (`check_migrations`), and secret leak scanning (`scan_secrets`).
+- **🎯 Process & Infrastructure:** Git diff vs SDD scope validation (`check_scope`), TDD Red-to-Green transition proof (`verify_tdd`), and tech guards (`docker_guard`, `celery_guard`, `redis_guard`, `postgres_guard`).
 
 ### 🔗 E. Single Source of Truth (SSOT) & Dynamic Mirroring
 Managing separate instructions for Cursor, Claude, Windsurf, Copilot, and Gemini causes documentation drift. CLC Kernel solves this via **Dynamic Mirroring**:

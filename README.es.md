@@ -53,7 +53,10 @@ Antes de tocar una sola línea de código en producción, el agente debe present
 Los agentes suelen generar "tests tautológicos" que nunca fallan ante bugs reales. CLC Kernel impone TDD genuino: el agente debe escribir un test de regresión que falle primero (Fase Roja) y demostrar el fallo antes de escribir la implementación (Fase Verde).
 
 ### 🛡️ D. Salvaguardas AST Determinísticas (Linters Nativos)
-Las instrucciones en markdown se olvidan con facilidad. CLC Kernel provisiona linters basados en el Árbol de Sintaxis Abstracta (AST) en el lenguaje nativo del stack (Python `ast`, Go `ast`, RuboCop, PHPStan, TypeScript AST). Estos guardias validan el aislamiento de capas de Clean Architecture, previenen fugas de secretos, auditan eficiencia de queries y bloquean commits inválidos.
+Las instrucciones en markdown se olvidan con facilidad. CLC Kernel provisiona linters basados en el Árbol de Sintaxis Abstracta (AST) en el lenguaje nativo del stack (Python `ast`, Go `ast`, RuboCop, PHPStan, TypeScript AST). Estos guardias validan físicamente los cambios y bloquean commits inválidos:
+- **📱 Frontend & UX:** Breakpoints mobile-first y touch targets de 44px (`check_responsive`), metadata SEO/tags GEO/prioridad LCP (`check_seo`), accesibilidad ARIA (`check_a11y`), reutilización de primitivas UI (`check_ui_reuse`), optimización de imágenes y tree-shaking (`check_performance`), y contratos Zod (`check_api_contracts`).
+- **🏛️ Backend & Arquitectura:** Aislamiento de capas Clean Architecture (`check_architecture`), prevención de queries N+1 en loops (`check_db_efficiency`), idempotencia de migraciones (`check_migrations`), y escaneo de secretos (`scan_secrets`).
+- **🎯 Proceso & Infraestructura:** Validación de alcance git diff vs SDD (`check_scope`), prueba de transición TDD Rojo-a-Verde (`verify_tdd`), y guardias de tecnologías (`docker_guard`, `celery_guard`, `redis_guard`, `postgres_guard`).
 
 ### 🔗 E. Single Source of Truth (SSOT) & Espejado Dinámico (Mirroring)
 Mantener archivos de reglas separados para Cursor, Claude, Windsurf, Copilot y Gemini produce desincronización y deriva de contexto. CLC Kernel lo resuelve mediante **Espejado Dinámico**:
