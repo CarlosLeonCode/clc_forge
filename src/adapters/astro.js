@@ -30,6 +30,8 @@ class AstroAdapter extends BaseAdapter {
       'Astro Component & UI Primitive Reuse First Guard',
       'Tailwind v4 Semantic Design Token Guard',
       'Accessibility & ARIA Guard (A11y & alt tags)',
+      'Responsive Design & Mobile-First Adaptability Guard (breakpoint & touch target audit)',
+      'SEO, GEO & Web Performance Guard (metadata, OpenGraph, Core Web Vitals)',
       'Secret & API Key Leak Scanner',
       'Content Collection Schema Validation Guard',
       'Vitest / Playwright Red-to-Green TDD Validator',
@@ -45,11 +47,13 @@ class AstroAdapter extends BaseAdapter {
    */
   getTools() {
     const baseTools = [
-      { name: 'scan_secrets', language: 'js',       path: 'scan_secrets.js', command: 'node tools/scan_secrets.js', description: 'Scans for leaked secrets and API keys' },
-      { name: 'check_a11y',   language: 'js',       path: 'check_a11y.js',   command: 'node tools/check_a11y.js',   description: 'Validates ARIA and accessibility rules' },
-      { name: 'check_custom', language: 'js',       path: 'check_custom.js', command: 'node tools/check_custom.js', description: 'Runs user-defined custom rules from .clc-forge.yml' },
-      { name: 'astro_check',  language: 'external', path: '', command: 'npx astro check', description: 'Astro type checking', extCLI: 'astro' },
-      { name: 'vitest',       language: 'external', path: '', command: 'npx vitest run',  description: 'Test runner', extCLI: 'vitest' },
+      { name: 'scan_secrets',     language: 'js',       path: 'scan_secrets.js',     command: 'node tools/scan_secrets.js',     description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_a11y',       language: 'js',       path: 'check_a11y.js',       command: 'node tools/check_a11y.js',       description: 'Validates ARIA and accessibility rules' },
+      { name: 'check_responsive', language: 'js',       path: 'check_responsive.js', command: 'node tools/check_responsive.js', description: 'Audits mobile-first responsiveness and fixed-width overflows' },
+      { name: 'check_seo',        language: 'js',       path: 'check_seo.js',        command: 'node tools/check_seo.js',        description: 'Validates SEO metadata, OpenGraph, GEO tags, and LCP priority' },
+      { name: 'check_custom',     language: 'js',       path: 'check_custom.js',     command: 'node tools/check_custom.js',     description: 'Runs user-defined custom rules from .clc-forge.yml' },
+      { name: 'astro_check',      language: 'external', path: '', command: 'npx astro check', description: 'Astro type checking', extCLI: 'astro' },
+      { name: 'vitest',           language: 'external', path: '', command: 'npx vitest run',  description: 'Test runner', extCLI: 'vitest' },
     ];
     return this._mergeTechTools(baseTools);
   }

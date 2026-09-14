@@ -113,14 +113,14 @@ CLC Kernel includes dedicated adapters for popular technology stacks:
 
 | Ecosystem | Detection Signature | Test Runner | Enforced Safeguards |
 |---|---|---|---|
-| ⚛️ **Next.js** | `next` | Vitest / Jest | UI Reuse, Semantic Tokens, RSC Rules, Zod, A11y, Performance |
-| ⚡ **FastAPI** | `fastapi` | Pytest | Pydantic V2, Alembic Idempotency, Clean Arch AST |
+| ⚛️ **Next.js** | `next` | Vitest / Jest | UI Reuse, Semantic Tokens, RSC Rules, Zod, A11y, Responsive, SEO, Performance |
+| ⚡ **FastAPI** | `fastapi` | Pytest | Pydantic V2, Alembic Idempotency, Clean Arch AST, DB Efficiency (N+1) |
 | 💎 **Rails** | `Gemfile` | RSpec | RuboCop AST, Brakeman Security, Migration Idempotency |
 | 🐹 **Golang** | `go.mod` | `go test` | `golangci-lint` AST, Domain/UseCase Clean Architecture |
 | 🦀 **Rust** | `Cargo.toml` | `cargo test` | `cargo clippy` AST, `cargo audit`, Strict Memory Safety |
 | 🐘 **Laravel** | `artisan` | Pest / PHPUnit | PHPStan AST, Eloquent N+1 Detection, Migrations |
-| 🎸 **Django** | `manage.py` | `pytest-django` | Django ORM Idempotency, Ruff AST, Scope Guard, DB Efficiency |
-| 🚀 **Astro** | `astro.config` | Playwright | Tailwind v4 Tokens, Content Collection Schema Guard |
+| 🎸 **Django** | `manage.py` | `pytest-django` | Django ORM Idempotency, Ruff AST, Scope Guard, DB Efficiency (N+1) |
+| 🚀 **Astro** | `astro.config` | Playwright | Tailwind v4 Tokens, Content Collection Schema, A11y, Responsive, SEO |
 
 ---
 

@@ -121,7 +121,13 @@ function installYamlModule(targetDir, sourceToolsDir) {
  */
 function installFallbackTools(targetDir) {
   const sourceToolsDir = path.join(__dirname, '..', 'tools');
-  const fallbackFiles = ['audit.js', 'audit.py', 'scan_secrets.js', 'scan_secrets.py', 'check_custom.js', 'check_custom.py'];
+  const fallbackFiles = [
+    'audit.js', 'audit.py',
+    'scan_secrets.js', 'scan_secrets.py',
+    'check_custom.js', 'check_custom.py',
+    'check_responsive.js', 'check_seo.js',
+    'check_db_efficiency.py'
+  ];
 
   fallbackFiles.forEach(file => {
     const srcFile = path.join(sourceToolsDir, file);
@@ -302,6 +308,8 @@ Forged by **CLC Kernel: The AI Agent Governance Engine**.
 
 ## 2. Core AI Safeguards
 ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
+- Responsive & Mobile-First Adaptability Guard
+- SEO, GEO & Web Performance Guard
 - Next.js Clean Architecture Guard
 - Secret & Client Exposure Guard
 - Accessibility & ARIA Guard (A11y)
@@ -314,6 +322,7 @@ ${isFront ? `- UI Component Reuse First (components/ui/ & semantic tokens)
 - Real TDD Validation (Red -> Green)
 - Secret Leak Guard
 - Clean Architecture AST Guard
+- Database Efficiency & N+1 Performance Guard
 - Database Migration Idempotency Guard
 - Memory Guard (Engram / Graphify)`}
 `;

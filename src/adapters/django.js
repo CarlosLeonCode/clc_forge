@@ -33,6 +33,8 @@ class DjangoAdapter extends BaseAdapter {
   getSafeguards() {
     return [
       'Flake8 / Ruff AST Python Code Quality Linter',
+      'Clean Architecture AST Guard (Domain -> Application -> Views)',
+      'Database Efficiency & N+1 Performance Guard (select_related / prefetch_related)',
       'Django ORM Migration Idempotency & Schema Drift Guard',
       'pytest-django Red-to-Green TDD Validator',
       'Secret & Private Key Leak Scanner',
@@ -49,11 +51,12 @@ class DjangoAdapter extends BaseAdapter {
    */
   getTools() {
     const baseTools = [
-      { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
-      { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Django layer boundaries' },
-      { name: 'check_custom',        language: 'python',   path: 'check_custom.py',       command: 'python3 tools/check_custom.py',     description: 'Runs user-defined custom rules from .clc-forge.yml' },
-      { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
-      { name: 'manage',             language: 'external', path: '', command: 'python3 manage.py test',  description: 'Django test runner', extCLI: 'manage.py' },
+      { name: 'scan_secrets',         language: 'py',       path: 'scan_secrets.py',         command: 'python3 tools/scan_secrets.py',         description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_architecture',   language: 'py',       path: 'check_architecture.py',   command: 'python3 tools/check_architecture.py',   description: 'Validates Django layer boundaries' },
+      { name: 'check_db_efficiency',  language: 'py',       path: 'check_db_efficiency.py',  command: 'python3 tools/check_db_efficiency.py',  description: 'Audits database query efficiency and N+1 loop calls' },
+      { name: 'check_custom',          language: 'python',   path: 'check_custom.py',         command: 'python3 tools/check_custom.py',       description: 'Runs user-defined custom rules from .clc-forge.yml' },
+      { name: 'ruff',                 language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
+      { name: 'manage',               language: 'external', path: '', command: 'python3 manage.py test',  description: 'Django test runner', extCLI: 'manage.py' },
     ];
     return this._mergeTechTools(baseTools);
   }

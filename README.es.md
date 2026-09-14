@@ -113,14 +113,14 @@ CLC Kernel cuenta con adaptadores dedicados para los principales ecosistemas:
 
 | Ecosistema | Firma de Detección | Test Runner | Salvaguardas Aplicadas |
 |---|---|---|---|
-| ⚛️ **Next.js** | `next` | Vitest / Jest | Reutilización de UI, Tokens Semánticos, Reglas RSC, Zod, A11y, Performance |
-| ⚡ **FastAPI** | `fastapi` | Pytest | Pydantic V2, Idempotencia Alembic, AST Arquitectura Limpia |
+| ⚛️ **Next.js** | `next` | Vitest / Jest | Reutilización de UI, Tokens Semánticos, Reglas RSC, Zod, A11y, Responsive, SEO, Performance |
+| ⚡ **FastAPI** | `fastapi` | Pytest | Pydantic V2, Idempotencia Alembic, AST Arquitectura Limpia, Eficiencia DB (N+1) |
 | 💎 **Rails** | `Gemfile` | RSpec | AST RuboCop, Seguridad Brakeman, Idempotencia de Migraciones |
 | 🐹 **Golang** | `go.mod` | `go test` | AST `golangci-lint`, Arquitectura Domain/UseCase |
 | 🦀 **Rust** | `Cargo.toml` | `cargo test` | AST `cargo clippy`, `cargo audit`, Seguridad de Memoria Estricta |
 | 🐘 **Laravel** | `artisan` | Pest / PHPUnit | AST PHPStan, Detección de N+1 Eloquent, Migraciones |
-| 🎸 **Django** | `manage.py` | `pytest-django` | Idempotencia ORM Django, AST Ruff, Scope Guard, DB Efficiency |
-| 🚀 **Astro** | `astro.config` | Playwright | Tokens Tailwind v4, Guard de Content Collection Schema |
+| 🎸 **Django** | `manage.py` | `pytest-django` | Idempotencia ORM Django, AST Ruff, Scope Guard, Eficiencia DB (N+1) |
+| 🚀 **Astro** | `astro.config` | Playwright | Tokens Tailwind v4, Content Collection Schema, A11y, Responsive, SEO |
 
 ---
 

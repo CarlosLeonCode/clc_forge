@@ -31,6 +31,7 @@ class FastApiAdapter extends BaseAdapter {
     return [
       'Ruff / Flake8 Python AST Code Quality Linter',
       'Clean Architecture AST Guard (Domain -> Application -> Routes)',
+      'Database Efficiency & N+1 Performance Guard (bulk queries & eager loading)',
       'Alembic Migration Idempotency & Schema Drift Guard',
       'Pytest Red-to-Green TDD Validator',
       'Pydantic V2 Response Schema Validation Guard',
@@ -48,12 +49,13 @@ class FastApiAdapter extends BaseAdapter {
    */
   getTools() {
     const baseTools = [
-      { name: 'scan_secrets',       language: 'py',       path: 'scan_secrets.py',       command: 'python3 tools/scan_secrets.py',       description: 'Scans for leaked secrets and API keys' },
-      { name: 'check_architecture', language: 'py',       path: 'check_architecture.py', command: 'python3 tools/check_architecture.py', description: 'Validates Clean Architecture layer boundaries' },
-      { name: 'check_migrations',   language: 'py',       path: 'check_migrations.py',   command: 'python3 tools/check_migrations.py',   description: 'Checks Alembic migration idempotency' },
-      { name: 'check_custom',        language: 'python',   path: 'check_custom.py',       command: 'python3 tools/check_custom.py',     description: 'Runs user-defined custom rules from .clc-forge.yml' },
-      { name: 'ruff',               language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
-      { name: 'pytest',             language: 'external', path: '', command: 'pytest',                   description: 'Test runner', extCLI: 'pytest' },
+      { name: 'scan_secrets',         language: 'py',       path: 'scan_secrets.py',         command: 'python3 tools/scan_secrets.py',         description: 'Scans for leaked secrets and API keys' },
+      { name: 'check_architecture',   language: 'py',       path: 'check_architecture.py',   command: 'python3 tools/check_architecture.py',   description: 'Validates Clean Architecture layer boundaries' },
+      { name: 'check_db_efficiency',  language: 'py',       path: 'check_db_efficiency.py',  command: 'python3 tools/check_db_efficiency.py',  description: 'Audits database query efficiency and N+1 loop calls' },
+      { name: 'check_migrations',     language: 'py',       path: 'check_migrations.py',     command: 'python3 tools/check_migrations.py',     description: 'Checks Alembic migration idempotency' },
+      { name: 'check_custom',          language: 'python',   path: 'check_custom.py',         command: 'python3 tools/check_custom.py',       description: 'Runs user-defined custom rules from .clc-forge.yml' },
+      { name: 'ruff',                 language: 'external', path: '', command: 'python3 -m ruff check .', description: 'Python AST linter', extCLI: 'ruff' },
+      { name: 'pytest',               language: 'external', path: '', command: 'pytest',                   description: 'Test runner', extCLI: 'pytest' },
     ];
     return this._mergeTechTools(baseTools);
   }
