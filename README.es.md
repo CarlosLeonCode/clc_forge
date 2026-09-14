@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="120" alt="clckernel_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+  <img width="350" height="350" alt="clckernel_logo" src="https://github.com/user-attachments/assets/2898e9c1-ec7a-4c60-a6dd-e62c05a0d446" />
 </div>
 
 # 🤖 CLC Kernel (`clckernel`)
@@ -48,7 +48,7 @@ Librados a su suerte, los agentes de IA sufren del "sesgo de inmediatez"—se la
 CLC Kernel resuelve esto transformando al LLM de una "herramienta de autocompletado" en un **Ingeniero de Software** disciplinado, atado a linters determinísticos de AST y gates de planificación obligatorios.
 
 <div align="center">
-  <img width="900" alt="clckernel_comparison" src="https://github.com/user-attachments/assets/2602679a-0927-4712-9ac9-793ec0c566e7" />
+  <img width="900" alt="clckernel_comparison_es" src="https://github.com/user-attachments/assets/4d2e6651-15be-46f6-ae12-c8274b6492ca" />
   <p><em>Izquierda: Agente de IA sin gobernanza — código caótico y alucinado. Derecha: Agente con CLC Kernel AIUP — estructurado, seguro y arquitectónicamente correcto.</em></p>
 </div>
 
