@@ -1,88 +1,87 @@
 ---
-const phases = [
+const steps = [
   {
-    num: "01",
-    title: "Research & Mapping",
-    tag: "Context",
-    desc: "Inspect affected files, dependencies, and tracebacks before touching a single line of code. No hallucinated context.",
-    color: "from-blue-500/20 to-cyan-500/20",
-    border: "border-cyan-500/30",
+    phase: "01",
+    name: "Research & Root Cause",
+    category: "Context",
+    desc: "Inspect code paths, AST dependencies, and tracebacks before editing. Forbids AI hallucinations without codebase evidence.",
+    details: "Zero blind edits. Codebase context must be proven before writing files.",
   },
   {
-    num: "02",
-    title: "SDD Local Planning",
-    tag: "Design",
-    desc: "Generate local, gitignored Spec-Driven Development specs (sdds/) defining exact scopes and API contracts.",
-    color: "from-indigo-500/20 to-purple-500/20",
-    border: "border-indigo-500/30",
+    phase: "02",
+    name: "SDD Local Planning",
+    category: "Architecture",
+    desc: "Generate local, gitignored Spec-Driven Development specs (sdds/) containing clear boundaries and schema contracts.",
+    details: "100% local and gitignored specs to isolate development intent.",
   },
   {
-    num: "03",
-    title: "TDD Red Phase",
-    tag: "Verification",
-    desc: "Write failing unit/regression tests first. The harness captures the failing exit code as deterministic proof of defect.",
-    color: "from-rose-500/20 to-red-500/20",
-    border: "border-rose-500/30",
+    phase: "03",
+    name: "TDD Red Phase (Regression)",
+    category: "Verification",
+    desc: "Write failing unit tests first. The harness records the failing exit code as deterministic evidence of defect reproduction.",
+    details: "Failing test output required before implementing fixes.",
   },
   {
-    num: "04",
-    title: "Clean Implementation",
-    tag: "Code",
-    desc: "Implement the feature or fix to make the test green while strictly respecting Clean Architecture layer isolation.",
-    color: "from-emerald-500/20 to-teal-500/20",
-    border: "border-emerald-500/30",
+    phase: "04",
+    name: "Clean Implementation (Green)",
+    category: "Execution",
+    desc: "Implement the feature or fix to make the test suite pass while strictly adhering to Clean Architecture layer isolation.",
+    details: "Presentation layers cannot call database models directly.",
   },
   {
-    num: "05",
-    title: "Audit Gate",
-    tag: "Guardrails",
-    desc: "Execute AST linters, secret scanners, database N+1 checkers, and responsive validations before staging.",
-    color: "from-amber-500/20 to-orange-500/20",
-    border: "border-amber-500/30",
+    phase: "05",
+    name: "Automated Audit Gate",
+    category: "Guardrails",
+    desc: "Execute AST linters, secret scanners, N+1 query checks, and responsive layout audits before staging files.",
+    details: "Deterministic zero-dependency scripts in Node.js & Python.",
   },
   {
-    num: "06",
-    title: "Pre-Commit & PR",
-    tag: "Delivery",
-    desc: "Automated git hooks block non-compliant commits. Generate comprehensive PR summaries with test & proof receipts.",
-    color: "from-purple-500/20 to-pink-500/20",
-    border: "border-purple-500/30",
+    phase: "06",
+    name: "DoD & Pre-Commit Enforcement",
+    category: "Delivery",
+    desc: "Native pre-commit hooks verify that all safeguards and audit gates passed before authorizing git commits.",
+    details: "Blocks non-compliant commits automatically at the git boundary.",
   },
 ];
 ---
 
-<section id="the-loop" class="py-24 relative">
+<section id="lifecycle" class="py-20 md:py-28 border-t border-white/[0.06] bg-[#080d15]/50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-bold mb-3">Enforceable Lifecycle</h2>
-      <p class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
-        The AI Agent Governance Loop
+    <div class="max-w-3xl mb-16">
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Deterministic Workflow</h2>
+      <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+        The Agent Governance Lifecycle
       </p>
-      <p class="text-slate-400 text-base sm:text-lg">
-        AI coding assistants should never push unverified code. CLC Kernel forces agents to follow a disciplined, test-driven, verifiable loop.
+      <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+        AI coding assistants should never push unverified code. CLC Kernel enforces a strict, multi-phase verification loop that stops regression and hallucination at the source.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {phases.map((phase) => (
-        <div class={`p-6 rounded-2xl glass-card border ${phase.border} relative overflow-hidden group`}>
-          <div class={`absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${phase.color} rounded-full blur-2xl group-hover:scale-125 transition-transform`}></div>
-          
-          <div class="flex items-center justify-between mb-4">
-            <span class="font-mono text-2xl font-black text-slate-500 group-hover:text-slate-300 transition-colors">
-              {phase.num}
-            </span>
-            <span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-300">
-              {phase.tag}
-            </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {steps.map((step) => (
+        <div class="surface-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xl font-bold text-emerald-400">
+                {step.phase}
+              </span>
+              <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white/[0.06] text-slate-300 border border-white/10">
+                {step.category}
+              </span>
+            </div>
+
+            <h3 class="text-base font-bold text-white mb-2">
+              {step.name}
+            </h3>
+            
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              {step.desc}
+            </p>
           </div>
 
-          <h3 class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
-            {phase.title}
-          </h3>
-          <p class="text-sm text-slate-400 leading-relaxed">
-            {phase.desc}
-          </p>
+          <div class="pt-3 border-t border-white/[0.06] text-[11px] font-mono text-slate-500">
+            {step.details}
+          </div>
         </div>
       ))}
     </div>

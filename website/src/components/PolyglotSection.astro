@@ -1,59 +1,83 @@
 ---
 const stacks = [
-  { name: "Next.js & React", type: "Frontend", status: "Supported", icon: "⚛️" },
-  { name: "FastAPI", type: "Python Backend", status: "Supported", icon: "⚡" },
-  { name: "Django", type: "Python Fullstack", status: "Supported", icon: "🎸" },
-  { name: "Astro", type: "Web & Content", status: "Supported", icon: "🚀" },
-  { name: "Ruby on Rails", type: "Ruby Backend", status: "Supported", icon: "💎" },
-  { name: "Golang", type: "Go Service", status: "Supported", icon: "🐹" },
-  { name: "Rust", type: "Native Systems", status: "Supported", icon: "🦀" },
-  { name: "Laravel", type: "PHP Fullstack", status: "Supported", icon: "🐘" },
+  { name: "Next.js / React", ecosystem: "TypeScript", runner: "Vitest / Jest", type: "Frontend" },
+  { name: "FastAPI", ecosystem: "Python", runner: "Pytest", type: "Backend" },
+  { name: "Django", ecosystem: "Python", runner: "Pytest / Django Test", type: "Fullstack" },
+  { name: "Astro", ecosystem: "TypeScript", runner: "Vitest / Playwright", type: "Web & Content" },
+  { name: "Ruby on Rails", ecosystem: "Ruby", runner: "RSpec / Minitest", type: "Backend" },
+  { name: "Golang", ecosystem: "Go", runner: "go test", type: "Microservices" },
+  { name: "Rust", ecosystem: "Rust", runner: "cargo test", type: "Systems" },
+  { name: "Laravel", ecosystem: "PHP", runner: "Pest / PHPUnit", type: "Fullstack" },
 ];
 
-const companions = [
-  { name: "Cursor / Windsurf", desc: "Native .cursorrules & .cursor/rules MDC symlinks" },
-  { name: "Google Antigravity", desc: "Native skills & rules.md synchronization" },
-  { name: "Claude Code", desc: "Authoritative CLAUDE.md law integration" },
-  { name: "GitHub Copilot", desc: "copilot-instructions.md standard generation" },
+const harnesses = [
+  {
+    name: "Cursor / Windsurf",
+    file: ".cursorrules & .cursor/rules/*.mdc",
+    desc: "Direct symbolic link to authoritative repository law and layer boundaries.",
+  },
+  {
+    name: "Google Antigravity",
+    file: ".antigravity/rules.md & skills",
+    desc: "Seamless synchronization of custom skills, audit gates, and execution rules.",
+  },
+  {
+    name: "Claude Code",
+    file: "CLAUDE.md",
+    desc: "Strict TDD verification enforcement and mandatory AST audit gate compliance.",
+  },
+  {
+    name: "GitHub Copilot",
+    file: ".github/copilot-instructions.md",
+    desc: "Consistent context injection for inline completions and chat suggestions.",
+  },
 ];
 ---
 
-<section id="polyglot" class="py-24 relative">
+<section id="ecosystems" class="py-20 md:py-28 border-t border-white/[0.06] bg-[#080d15]/50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-16">
       <div class="lg:col-span-5">
-        <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-bold mb-3">Universal Compatibility</h2>
-        <p class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
-          One Governance Standard for Every Tech Stack
+        <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Universal Governance</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-4">
+          One Law for Every Stack
         </p>
-        <p class="text-slate-400 text-base leading-relaxed mb-8">
-          Whether you build with Python, TypeScript, Go, Ruby, PHP, or Rust, CLC Kernel detects your project signature and materializes native hooks, test configurations, and AST linters automatically.
+        <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+          Regardless of your framework or language, CLC Kernel detects your project signature, installs native linters, and materializes enforceable rules for your preferred AI coding assistants.
         </p>
-
-        <div class="space-y-3">
-          <h4 class="text-xs font-mono uppercase text-slate-400 font-semibold tracking-wider">AI IDE & Harness Support:</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {companions.map((comp) => (
-              <div class="p-3 rounded-lg bg-white/5 border border-white/5">
-                <div class="font-bold text-xs text-slate-200">{comp.name}</div>
-                <div class="text-[11px] text-slate-400">{comp.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
-      <div class="lg:col-span-7">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {stacks.map((stack) => (
-            <div class="p-4 rounded-xl glass-card text-center flex flex-col items-center justify-center min-h-[120px]">
-              <span class="text-3xl mb-2">{stack.icon}</span>
-              <span class="font-bold text-sm text-slate-200">{stack.name}</span>
-              <span class="text-[10px] text-emerald-400 font-mono mt-1">{stack.type}</span>
+      <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {stacks.map((stack) => (
+          <div class="surface-card p-4 flex flex-col justify-between min-h-[105px]">
+            <div>
+              <div class="font-bold text-sm text-white mb-1">{stack.name}</div>
+              <div class="text-[11px] text-slate-400">{stack.ecosystem}</div>
             </div>
-          ))}
-        </div>
+            <div class="text-[10px] font-mono text-emerald-400 pt-2 border-t border-white/[0.06]">
+              {stack.runner}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
+
+    <!-- AI Harness Integration Grid -->
+    <div>
+      <h3 class="text-xs font-mono uppercase text-slate-400 font-semibold tracking-wider mb-4">
+        Supported AI Agent Harnesses:
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {harnesses.map((harness) => (
+          <div class="surface-card p-5">
+            <div class="font-bold text-sm text-white mb-1">{harness.name}</div>
+            <div class="font-mono text-[10px] text-emerald-400 mb-2">{harness.file}</div>
+            <p class="text-xs text-slate-400 leading-relaxed">{harness.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
   </div>
 </section>

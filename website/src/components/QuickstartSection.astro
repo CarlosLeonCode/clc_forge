@@ -1,52 +1,61 @@
 ---
+const steps = [
+  {
+    step: "1",
+    title: "Interactive Initialization",
+    desc: "Auto-detects your ecosystem, configures .clckernel.yaml, and links agent rules.",
+    cmd: "npx clckernel start",
+  },
+  {
+    step: "2",
+    title: "Environment & Health Audit",
+    desc: "Validates hook installations, test runner availability, and AST syntax parsing.",
+    cmd: "npx clckernel doctor",
+  },
+  {
+    step: "3",
+    title: "Manual Audit Gate Execution",
+    desc: "Runs multi-guard checks against local git diffs before staging changes.",
+    cmd: "node tools/audit.js",
+  },
+];
 ---
 
-<section id="quickstart" class="py-24 relative bg-slate-950/60 border-t border-white/5">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-bold mb-3">Instant Provisioning</h2>
-    <p class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
-      Initialize Your Governance Harness in Seconds
+<section id="quickstart" class="py-20 md:py-28 border-t border-white/[0.06]">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Instant Setup</h2>
+    <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+      Initialize Your Governance Harness
     </p>
-    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-12">
-      Run CLC Kernel in your project root. It will auto-detect your stack, generate git hooks, install zero-dependency linters, and link your agent instructions.
+    <p class="text-sm sm:text-base text-slate-400 max-w-xl mx-auto mb-12">
+      Zero heavy dependencies. Run the CLI in your project root to provision enforceable agent guardrails immediately.
     </p>
 
-    <div class="max-w-2xl mx-auto space-y-4 text-left">
-      <!-- Step 1 -->
-      <div class="p-4 rounded-xl glass-card border border-white/10 flex items-start gap-4">
-        <span class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">1</span>
-        <div class="w-full">
-          <div class="text-xs font-mono text-slate-400 mb-1">Interactive Initialization</div>
-          <div class="bg-slate-950 p-3 rounded-lg font-mono text-xs text-slate-200 flex items-center justify-between">
-            <span>npx clckernel start</span>
-            <button onclick="navigator.clipboard.writeText('npx clckernel start')" class="text-[11px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5">Copy</button>
+    <div class="space-y-4 text-left">
+      {steps.map((s) => (
+        <div class="surface-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">
+              {s.step}
+            </span>
+            <div>
+              <div class="text-sm font-bold text-white mb-0.5">{s.title}</div>
+              <div class="text-xs text-slate-400">{s.desc}</div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Step 2 -->
-      <div class="p-4 rounded-xl glass-card border border-white/10 flex items-start gap-4">
-        <span class="w-7 h-7 rounded-full bg-cyan-500/20 text-cyan-400 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">2</span>
-        <div class="w-full">
-          <div class="text-xs font-mono text-slate-400 mb-1">Verify Environment Health</div>
-          <div class="bg-slate-950 p-3 rounded-lg font-mono text-xs text-slate-200 flex items-center justify-between">
-            <span>npx clckernel doctor</span>
-            <button onclick="navigator.clipboard.writeText('npx clckernel doctor')" class="text-[11px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5">Copy</button>
+          <div class="flex items-center gap-2 bg-[#06090e] px-3 py-2 rounded-lg border border-white/10 font-mono text-xs text-slate-200 shrink-0">
+            <span>{s.cmd}</span>
+            <button
+              type="button"
+              onclick={`navigator.clipboard.writeText('${s.cmd}'); const el=this; el.textContent='Copied!'; setTimeout(()=>el.textContent='Copy', 2000)`}
+              class="ml-2 text-[11px] font-sans px-2 py-0.5 rounded bg-white/[0.08] hover:bg-white/[0.14] text-slate-300 transition-colors"
+            >
+              Copy
+            </button>
           </div>
         </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="p-4 rounded-xl glass-card border border-white/10 flex items-start gap-4">
-        <span class="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">3</span>
-        <div class="w-full">
-          <div class="text-xs font-mono text-slate-400 mb-1">Run Full Quality Audit Gate</div>
-          <div class="bg-slate-950 p-3 rounded-lg font-mono text-xs text-slate-200 flex items-center justify-between">
-            <span>node tools/audit.js # or python tools/audit.py</span>
-            <button onclick="navigator.clipboard.writeText('node tools/audit.js')" class="text-[11px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5">Copy</button>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   </div>
 </section>
