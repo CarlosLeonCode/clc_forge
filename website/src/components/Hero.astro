@@ -1,103 +1,166 @@
 ---
 ---
 
-<section class="relative pt-20 pb-16 md:pt-28 md:pb-24">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<section class="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- Status badge -->
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide mb-8">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-      Deterministic AI Agent Governance Engine
-    </div>
-
-    <!-- Main Title -->
-    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white max-w-5xl mx-auto leading-[1.08] mb-6">
-      Eliminate uncontrolled code <br class="hidden sm:inline" />
-      <span class="text-emerald-400">before</span> it reaches production.
-    </h1>
-
-    <!-- Subtitle -->
-    <p class="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-      CLC Kernel forces autonomous coding agents into strict SDD specifications, verifiable TDD proofs, and automated AST architectural guardrails across 8+ programming languages.
-    </p>
-
-    <!-- Quick action bar -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
-      <div class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#0c121d] border border-white/10 font-mono text-xs sm:text-sm text-slate-200 shadow-lg">
-        <span class="text-emerald-400 select-none">$</span>
-        <span class="select-all">npx clckernel start</span>
-        <button 
-          type="button"
-          onclick="navigator.clipboard.writeText('npx clckernel start'); const el=this.querySelector('.copy-label'); el.textContent='Copied!'; setTimeout(()=>el.textContent='Copy', 2000)" 
-          class="ml-2 flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.06] hover:bg-white/[0.12] text-xs font-sans text-slate-300 transition-colors"
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          <span class="copy-label">Copy</span>
-        </button>
-      </div>
-
-      <a
-        href="#lifecycle"
-        class="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs sm:text-sm transition-colors"
-      >
-        Explore Lifecycle →
-      </a>
-    </div>
-
-    <!-- Live Governance Simulator Terminal -->
-    <div class="max-w-4xl mx-auto rounded-xl terminal-window text-left overflow-hidden border border-white/10">
-      <div class="bg-[#0c121d] px-4 py-3 border-b border-white/[0.08] flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 rounded-full bg-[#ff5f56]/80"></div>
-          <div class="w-3 h-3 rounded-full bg-[#ffbd2e]/80"></div>
-          <div class="w-3 h-3 rounded-full bg-[#27c93f]/80"></div>
-          <span class="ml-2 text-xs font-mono text-slate-400">audit_orchestrator.js — clckernel gate</span>
-        </div>
-        <div class="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-          HARD GATE MODE
-        </div>
-      </div>
-
-      <div class="p-5 font-mono text-xs text-slate-300 space-y-2.5 overflow-x-auto bg-[#070b12]">
-        <div class="flex items-center gap-2 text-slate-400">
-          <span class="text-emerald-400">➜</span> <span>node tools/audit.js</span>
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      
+      <!-- LEFT COLUMN: Value Proposition & Commands -->
+      <div class="lg:col-span-6 space-y-6 text-left">
         
-        <div class="text-slate-500 pt-1">
-          [1/5] Scanning git-diff against active safeguard catalog...
+        <!-- Status badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold tracking-wide">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          AI Agent Governance Engine
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-slate-200">
-          <div class="flex items-center gap-2">
-            <span class="text-emerald-400">✔</span>
-            <span>scan_secrets</span>
-            <span class="text-slate-500 text-[10px]">0 credentials leaked</span>
+        <!-- Main Headline -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+          Eliminate uncontrolled code <span class="text-emerald-600">before</span> it reaches production.
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          CLC Kernel stops autonomous coding agents from hallucinating architecture, skipping tests, or leaking credentials. It establishes deterministic SDD planning, verifiable TDD proofs, and native AST safeguards.
+        </p>
+
+        <!-- Command Card & Quickstart -->
+        <div class="p-4 rounded-xl bg-slate-900 text-white shadow-xl shadow-slate-900/10 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono pb-2 border-b border-slate-800">
+            <span>Universal Initialization</span>
+            <span class="text-emerald-400">Zero Dependencies</span>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-emerald-400">✔</span>
-            <span>check_architecture</span>
-            <span class="text-slate-500 text-[10px]">Clean Architecture AST passed</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-emerald-400">✔</span>
-            <span>check_db_efficiency</span>
-            <span class="text-slate-500 text-[10px]">No N+1 queries detected</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-emerald-400">✔</span>
-            <span>check_scope</span>
-            <span class="text-slate-500 text-[10px]">100% within authorized SDD</span>
+          <div class="flex items-center justify-between gap-3 font-mono text-sm">
+            <div class="flex items-center gap-2 overflow-x-auto">
+              <span class="text-emerald-400 select-none">$</span>
+              <span class="text-slate-100 select-all font-semibold">npx clckernel start</span>
+            </div>
+            <button 
+              type="button"
+              onclick="navigator.clipboard.writeText('npx clckernel start'); const el=this.querySelector('.copy-text'); el.textContent='Copied!'; setTimeout(()=>el.textContent='Copy', 2000)" 
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-xs font-sans font-medium text-slate-200 transition-colors shrink-0"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="copy-text">Copy</span>
+            </button>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-emerald-400 font-semibold text-xs">
-          <span>✔ AUDIT GATE PASSED — Pre-commit authorization granted.</span>
-          <span class="text-slate-500 text-[10px]">Exit Code 0</span>
+        <!-- Pillar Highlights -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-700">
+            <svg class="text-emerald-600 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Real Red→Green TDD</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-700">
+            <svg class="text-emerald-600 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Clean Architecture AST</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-700">
+            <svg class="text-emerald-600 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Hard Git Pre-commit</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Interactive Animated Governance Terminal -->
+      <div class="lg:col-span-6">
+        <div class="rounded-xl terminal-window overflow-hidden border border-slate-800 shadow-2xl">
+          
+          <!-- Terminal Header -->
+          <div class="bg-[#0b1120] px-4 py-3 border-b border-slate-800/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+              <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+              <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+              <span class="ml-2 text-xs font-mono text-slate-400">agent_harness_session.sh</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-[11px] font-mono text-emerald-400 font-semibold">GATE ENFORCED</span>
+            </div>
+          </div>
+
+          <!-- Terminal Content with Interactive Animation States -->
+          <div id="terminal-body" class="p-5 font-mono text-xs text-slate-300 space-y-3 bg-[#070b14] min-h-[380px] overflow-y-auto">
+            
+            <!-- Command 1 -->
+            <div class="flex items-center gap-2 text-slate-400">
+              <span class="text-emerald-400">agent@governance:~$</span>
+              <span class="text-white font-semibold">clckernel start</span>
+            </div>
+            
+            <!-- Output 1 -->
+            <div class="text-slate-400 pl-4 border-l border-emerald-500/30 space-y-1 text-[11px]">
+              <div><span class="text-cyan-400">✔</span> Stack detected: Node.js / TypeScript (Next.js + Vitest)</div>
+              <div><span class="text-cyan-400">✔</span> Local SDD directory initialized (<span class="text-slate-200">sdds/01_auth/</span>)</div>
+              <div><span class="text-cyan-400">✔</span> Native git pre-commit hooks installed</div>
+            </div>
+
+            <!-- Command 2 -->
+            <div class="flex items-center gap-2 text-slate-400 pt-2">
+              <span class="text-emerald-400">agent@governance:~$</span>
+              <span class="text-white font-semibold">node tools/audit.js</span>
+            </div>
+
+            <!-- Audit Output -->
+            <div class="bg-slate-900/90 rounded-lg p-3 border border-slate-800 space-y-2 text-[11px]">
+              <div class="text-slate-400 font-semibold flex items-center justify-between">
+                <span>🛡️ RUNNING DETERMINISTIC AST AUDIT GATE</span>
+                <span class="text-[10px] text-slate-500">100% Deterministic</span>
+              </div>
+              
+              <div class="space-y-1 text-slate-300">
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><span class="text-emerald-400">✔</span> scan_secrets</span>
+                  <span class="text-emerald-400 text-[10px]">0 leaks detected</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><span class="text-emerald-400">✔</span> check_architecture</span>
+                  <span class="text-emerald-400 text-[10px]">Layer isolation verified</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><span class="text-emerald-400">✔</span> check_db_efficiency</span>
+                  <span class="text-emerald-400 text-[10px]">No N+1 queries detected</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><span class="text-emerald-400">✔</span> check_scope</span>
+                  <span class="text-emerald-400 text-[10px]">Diff matches SDD plan</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Final State -->
+            <div class="pt-2 flex items-center justify-between text-emerald-400 font-bold border-t border-slate-800 text-xs">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                [PASSED] Pre-commit authorization granted
+              </span>
+              <span class="text-slate-400 font-mono text-[10px]">Exit Code: 0</span>
+            </div>
+
+            <!-- Terminal Cursor -->
+            <div class="flex items-center gap-1 text-slate-500 text-[11px] pt-1">
+              <span class="text-emerald-400">agent@governance:~$</span>
+              <span class="w-2 h-4 bg-emerald-400 cursor-blink inline-block align-middle"></span>
+            </div>
+
+          </div>
+
         </div>
       </div>
+
     </div>
 
   </div>

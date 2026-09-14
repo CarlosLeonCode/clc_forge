@@ -51,14 +51,14 @@ const guards = [
 ];
 ---
 
-<section id="safeguards" class="py-20 md:py-28 border-t border-white/[0.06]">
+<section id="safeguards" class="py-20 md:py-28 border-t border-slate-200 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mb-16">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Deterministic Linting</h2>
-      <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Deterministic Linting</h2>
+      <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
         Zero-Dependency Safeguards
       </p>
-      <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
         Built exclusively using native Node.js and Python AST parsers. Fast execution, zero bloated runtime npm dependencies, and deterministic rules.
       </p>
     </div>
@@ -68,20 +68,20 @@ const guards = [
         <div class="surface-card p-5 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-mono font-bold text-white tracking-wide">
+              <span class="text-xs font-mono font-bold text-slate-900 tracking-wide">
                 {guard.name}
               </span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.06] text-emerald-400 border border-emerald-500/20">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
                 {guard.category}
               </span>
             </div>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
               {guard.desc}
             </p>
           </div>
           
-          <div class="pt-3 border-t border-white/[0.06] text-[11px] font-mono text-slate-500">
-            Engine: <span class="text-slate-300">{guard.lang}</span>
+          <div class="pt-3 border-t border-slate-100 text-[11px] font-mono text-slate-500">
+            Engine: <span class="text-slate-800 font-medium">{guard.lang}</span>
           </div>
         </div>
       ))}

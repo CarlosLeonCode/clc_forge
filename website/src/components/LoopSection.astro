@@ -45,14 +45,14 @@ const steps = [
 ];
 ---
 
-<section id="lifecycle" class="py-20 md:py-28 border-t border-white/[0.06] bg-[#080d15]/50">
+<section id="lifecycle" class="py-20 md:py-28 border-t border-slate-200 bg-[#f8fafc]/70">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mb-16">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Deterministic Workflow</h2>
-      <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Deterministic Workflow</h2>
+      <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
         The Agent Governance Lifecycle
       </p>
-      <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
         AI coding assistants should never push unverified code. CLC Kernel enforces a strict, multi-phase verification loop that stops regression and hallucination at the source.
       </p>
     </div>
@@ -62,24 +62,24 @@ const steps = [
         <div class="surface-card p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="font-mono text-xl font-bold text-emerald-400">
+              <span class="font-mono text-xl font-bold text-emerald-600">
                 {step.phase}
               </span>
-              <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white/[0.06] text-slate-300 border border-white/10">
+              <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-medium">
                 {step.category}
               </span>
             </div>
 
-            <h3 class="text-base font-bold text-white mb-2">
+            <h3 class="text-base font-bold text-slate-900 mb-2">
               {step.name}
             </h3>
             
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
               {step.desc}
             </p>
           </div>
 
-          <div class="pt-3 border-t border-white/[0.06] text-[11px] font-mono text-slate-500">
+          <div class="pt-3 border-t border-slate-100 text-[11px] font-mono text-slate-500">
             {step.details}
           </div>
         </div>

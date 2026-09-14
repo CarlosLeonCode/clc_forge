@@ -21,13 +21,13 @@ const steps = [
 ];
 ---
 
-<section id="quickstart" class="py-20 md:py-28 border-t border-white/[0.06]">
+<section id="quickstart" class="py-20 md:py-28 border-t border-slate-200 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold mb-2">Instant Setup</h2>
-    <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+    <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-600 font-semibold mb-2">Instant Setup</h2>
+    <p class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
       Initialize Your Governance Harness
     </p>
-    <p class="text-sm sm:text-base text-slate-400 max-w-xl mx-auto mb-12">
+    <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto mb-12">
       Zero heavy dependencies. Run the CLI in your project root to provision enforceable agent guardrails immediately.
     </p>
 
@@ -35,21 +35,21 @@ const steps = [
       {steps.map((s) => (
         <div class="surface-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-start gap-4">
-            <span class="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">
+            <span class="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-mono text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">
               {s.step}
             </span>
             <div>
-              <div class="text-sm font-bold text-white mb-0.5">{s.title}</div>
-              <div class="text-xs text-slate-400">{s.desc}</div>
+              <div class="text-sm font-bold text-slate-900 mb-0.5">{s.title}</div>
+              <div class="text-xs text-slate-600">{s.desc}</div>
             </div>
           </div>
 
-          <div class="flex items-center gap-2 bg-[#06090e] px-3 py-2 rounded-lg border border-white/10 font-mono text-xs text-slate-200 shrink-0">
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 font-mono text-xs text-slate-100 shrink-0 shadow-sm">
             <span>{s.cmd}</span>
             <button
               type="button"
               onclick={`navigator.clipboard.writeText('${s.cmd}'); const el=this; el.textContent='Copied!'; setTimeout(()=>el.textContent='Copy', 2000)`}
-              class="ml-2 text-[11px] font-sans px-2 py-0.5 rounded bg-white/[0.08] hover:bg-white/[0.14] text-slate-300 transition-colors"
+              class="ml-2 text-[11px] font-sans px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
             >
               Copy
             </button>
