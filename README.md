@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="350" alt="clckernel_logo" src="https://github.com/user-attachments/assets/fb78ba72-2c30-42d2-a738-c97c283b122c" />
+  <img width="350" height="350" alt="clckernel_logo" src="https://github.com/user-attachments/assets/ed631ce1-c996-4347-b818-97b8ab25e0ec" />
 </div>
 
 # 🤖 CLC Kernel (`clckernel`)
@@ -49,7 +49,7 @@ Left to their own devices, AI agents suffer from "immediacy bias"—rushing to w
 CLC Kernel solves this by shifting the LLM from a "code autocomplete tool" into a disciplined **Software Engineer** bound by deterministic AST linters and mandatory planning gates.
 
 <div align="center">
-  <img width="900" alt="clckernel_comparison" src="https://github.com/user-attachments/assets/2602679a-0927-4712-9ac9-793ec0c566e7" />
+  <img width="900" alt="clckernel_comparison" src="https://github.com/user-attachments/assets/cb62753a-3e88-432d-9196-94eaa817864d" />
   <p><em>Left: AI agent without governance — chaotic, hallucinated code. Right: AI agent with CLC Kernel AIUP — structured, safe, architectural.</em></p>
 </div>
 
