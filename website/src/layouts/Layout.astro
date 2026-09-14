@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "CLC Kernel — The Universal Polyglot AI Agent Governance Engine",
+  description = "Deterministic AI agent governance, automated AST quality guards, and enforceable SDD/TDD workflows across 8+ programming ecosystems."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- OpenGraph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CLC Kernel" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body class="min-h-screen bg-[#090d16] text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-300">
+    <!-- Ambient glow background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-emerald-500/10 via-cyan-500/5 to-transparent blur-3xl opacity-70"></div>
+      <div class="absolute top-[600px] -left-40 w-[600px] h-[600px] bg-indigo-500/5 blur-3xl rounded-full"></div>
+      <div class="absolute top-[1200px] -right-40 w-[700px] h-[700px] bg-emerald-500/5 blur-3xl rounded-full"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+            ⚡
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+              CLC Kernel
+              <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v1.2</span>
+            </span>
+          </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8 text-sm text-slate-300 font-medium">
+          <a href="#the-loop" class="hover:text-emerald-400 transition-colors">The Loop</a>
+          <a href="#safeguards" class="hover:text-emerald-400 transition-colors">Safeguards</a>
+          <a href="#polyglot" class="hover:text-emerald-400 transition-colors">Ecosystems</a>
+          <a href="#quickstart" class="hover:text-emerald-400 transition-colors">Quickstart</a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <a
+            href="https://github.com/carlosleoncode/clc_forge"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-slate-200 transition-all hover:border-emerald-500/30"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-[#070a11] py-12 mt-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-slate-500">
+        <div class="flex items-center gap-3">
+          <span class="font-semibold text-slate-300">CLC Kernel</span>
+          <span>—</span>
+          <span>Crafted for high-discipline AI agent engineering.</span>
+        </div>
+        <div>
+          MIT Licensed © {new Date().getFullYear()} Carlos Leon Code.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+---
+const safeguards = [
+  {
+    name: "scan_secrets",
+    lang: "Node.js & Python",
+    category: "Security",
+    desc: "Scans diffs for private keys, AWS/Stripe credentials, JWT secrets, and hardcoded DB passwords with zero false-positives.",
+    icon: "🔐",
+  },
+  {
+    name: "check_architecture",
+    lang: "JS / Python AST",
+    category: "Architecture",
+    desc: "Validates Clean Architecture layer boundaries (Domain -> Use Case -> Infrastructure) and blocks presentation layer DB queries.",
+    icon: "🏛️",
+  },
+  {
+    name: "check_db_efficiency",
+    lang: "Python AST",
+    category: "Performance",
+    desc: "Detects ORM N+1 query patterns in loops and enforces select_related / prefetch_related / joinedload in queries.",
+    icon: "⚡",
+  },
+  {
+    name: "check_responsive",
+    lang: "Node.js AST",
+    category: "Frontend",
+    desc: "Enforces mobile-first CSS, flags fixed-pixel desktop overflows (width > 400px), and requires min 44x44px touch targets.",
+    icon: "📱",
+  },
+  {
+    name: "check_seo",
+    lang: "Node.js AST",
+    category: "SEO & CWV",
+    desc: "Validates OpenGraph, GEO tags, unique <h1> hierarchy, and LCP priority tags for hero media assets.",
+    icon: "🎯",
+  },
+  {
+    name: "check_migrations",
+    lang: "Python AST",
+    category: "Database",
+    desc: "Audits Alembic and Django migrations to guarantee operations are reversible, safe, and idempotent.",
+    icon: "🗄️",
+  },
+  {
+    name: "docker_guard",
+    lang: "Python AST",
+    category: "DevOps",
+    desc: "Enforces non-root USER directives in Dockerfiles, blocks ENV secrets, and requires container HEALTHCHECK.",
+    icon: "🐳",
+  },
+  {
+    name: "celery_guard & redis_guard",
+    lang: "Python AST",
+    category: "Infrastructure",
+    desc: "Guarantees broker URL environment isolation, decode_responses=True, and mandatory connection timeouts.",
+    icon: "📦",
+  },
+];
+---
+
+<section id="safeguards" class="py-24 relative bg-slate-950/40 border-y border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-xs uppercase font-mono tracking-widest text-cyan-400 font-bold mb-3">Deterministic AST Linters</h2>
+      <p class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
+        Zero-Dependency Safeguards
+      </p>
+      <p class="text-slate-400 text-base sm:text-lg">
+        Built with native Node.js and Python AST parsers. Fast execution, zero heavy npm dependencies, 100% deterministic rules.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      {safeguards.map((guard) => (
+        <div class="p-5 rounded-xl glass-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-2xl">{guard.icon}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-cyan-300 border border-white/10">
+                {guard.category}
+              </span>
+            </div>
+            <h3 class="font-mono text-sm font-bold text-slate-100 mb-1">
+              {guard.name}
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              {guard.desc}
+            </p>
+          </div>
+          <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-slate-500">
+            Engine: <span class="text-slate-400">{guard.lang}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

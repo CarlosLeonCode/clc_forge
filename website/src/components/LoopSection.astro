@@ -1,0 +1,90 @@
+---
+const phases = [
+  {
+    num: "01",
+    title: "Research & Mapping",
+    tag: "Context",
+    desc: "Inspect affected files, dependencies, and tracebacks before touching a single line of code. No hallucinated context.",
+    color: "from-blue-500/20 to-cyan-500/20",
+    border: "border-cyan-500/30",
+  },
+  {
+    num: "02",
+    title: "SDD Local Planning",
+    tag: "Design",
+    desc: "Generate local, gitignored Spec-Driven Development specs (sdds/) defining exact scopes and API contracts.",
+    color: "from-indigo-500/20 to-purple-500/20",
+    border: "border-indigo-500/30",
+  },
+  {
+    num: "03",
+    title: "TDD Red Phase",
+    tag: "Verification",
+    desc: "Write failing unit/regression tests first. The harness captures the failing exit code as deterministic proof of defect.",
+    color: "from-rose-500/20 to-red-500/20",
+    border: "border-rose-500/30",
+  },
+  {
+    num: "04",
+    title: "Clean Implementation",
+    tag: "Code",
+    desc: "Implement the feature or fix to make the test green while strictly respecting Clean Architecture layer isolation.",
+    color: "from-emerald-500/20 to-teal-500/20",
+    border: "border-emerald-500/30",
+  },
+  {
+    num: "05",
+    title: "Audit Gate",
+    tag: "Guardrails",
+    desc: "Execute AST linters, secret scanners, database N+1 checkers, and responsive validations before staging.",
+    color: "from-amber-500/20 to-orange-500/20",
+    border: "border-amber-500/30",
+  },
+  {
+    num: "06",
+    title: "Pre-Commit & PR",
+    tag: "Delivery",
+    desc: "Automated git hooks block non-compliant commits. Generate comprehensive PR summaries with test & proof receipts.",
+    color: "from-purple-500/20 to-pink-500/20",
+    border: "border-purple-500/30",
+  },
+];
+---
+
+<section id="the-loop" class="py-24 relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-bold mb-3">Enforceable Lifecycle</h2>
+      <p class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
+        The AI Agent Governance Loop
+      </p>
+      <p class="text-slate-400 text-base sm:text-lg">
+        AI coding assistants should never push unverified code. CLC Kernel forces agents to follow a disciplined, test-driven, verifiable loop.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {phases.map((phase) => (
+        <div class={`p-6 rounded-2xl glass-card border ${phase.border} relative overflow-hidden group`}>
+          <div class={`absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${phase.color} rounded-full blur-2xl group-hover:scale-125 transition-transform`}></div>
+          
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-2xl font-black text-slate-500 group-hover:text-slate-300 transition-colors">
+              {phase.num}
+            </span>
+            <span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-300">
+              {phase.tag}
+            </span>
+          </div>
+
+          <h3 class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+            {phase.title}
+          </h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            {phase.desc}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -8,3 +8,7 @@ sdds/*
 openspec/*
 !openspec/.gitkeep
 .ruff_cache/
+node_modules/
+website/dist/
+website/.astro/
+website/node_modules/

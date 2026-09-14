@@ -1,0 +1,85 @@
+---
+---
+
+<section class="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <!-- Top badge -->
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-8 shadow-sm">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      Deterministic Agent Governance
+    </div>
+
+    <!-- Main headline -->
+    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl mx-auto leading-[1.1] mb-8">
+      Stop letting AI agents write <br />
+      <span class="gradient-text">uncontrolled code</span> in your codebase.
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+      <strong class="text-slate-200">CLC Kernel</strong> is the universal polyglot governance engine that enforces 
+      <span class="text-emerald-400 font-medium">real TDD</span>, <span class="text-cyan-400 font-medium">Clean Architecture boundaries</span>, 
+      and automated <span class="text-indigo-400 font-medium">AST safeguards</span> before any code reaches production.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+      <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-900 border border-slate-700/80 font-mono text-sm text-slate-200 shadow-xl shadow-black/40">
+        <span class="text-emerald-400 select-none">$</span>
+        <span class="select-all">npx clckernel start</span>
+        <button 
+          onclick="navigator.clipboard.writeText('npx clckernel start'); this.innerText = 'Copied!'; setTimeout(() => this.innerText = 'Copy', 2000)" 
+          class="ml-2 text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-slate-300 transition-colors"
+        >
+          Copy
+        </button>
+      </div>
+
+      <a
+        href="#the-loop"
+        class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
+      >
+        Explore Governance Loop →
+      </a>
+    </div>
+
+    <!-- Interactive Terminal Visualizer -->
+    <div class="max-w-4xl mx-auto rounded-2xl glass-panel p-1.5 shadow-2xl border border-white/10 text-left">
+      <div class="bg-slate-950/90 rounded-xl p-4 sm:p-6 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto border border-white/5">
+        <div class="flex items-center gap-2 pb-4 border-b border-white/10 text-slate-500 text-xs">
+          <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+          <span class="ml-2 text-slate-400">clckernel governance session</span>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          <div class="text-slate-400">
+            <span class="text-emerald-400">➜</span> <span class="text-slate-200">clckernel audit</span>
+          </div>
+          <div class="text-slate-400 font-semibold text-cyan-300">
+            🔍 Running CLC Kernel Multi-Guard Gate...
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1">
+            <div class="flex items-center gap-2 text-emerald-400">
+              <span>✔</span> <span>scan_secrets: 0 hardcoded keys detected</span>
+            </div>
+            <div class="flex items-center gap-2 text-emerald-400">
+              <span>✔</span> <span>check_architecture: Clean Architecture AST intact</span>
+            </div>
+            <div class="flex items-center gap-2 text-emerald-400">
+              <span>✔</span> <span>check_db_efficiency: No N+1 query patterns detected</span>
+            </div>
+            <div class="flex items-center gap-2 text-emerald-400">
+              <span>✔</span> <span>check_scope: Git diff matches authorized SDD</span>
+            </div>
+          </div>
+          <div class="pt-2 text-emerald-400 font-bold border-t border-white/10 flex items-center justify-between">
+            <span>[PASSED] Audit Gate Verified: Agent authorized to commit.</span>
+            <span class="text-slate-500 text-[10px]">100% Deterministic</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
